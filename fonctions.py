@@ -57,7 +57,21 @@ def coefficient_regression_b0(mean_y,b1,mean_x):
 
 def droite_regression(b0,b1,X):
     y = []
-    for i in range(len(X)):
-        y.append(b0+b1*X)
+    for i in range(0,7):
+        y.append(b0+b1*i)
     return y
 
+def coefficient_determination_r2(SCE,SCT):
+    return 1-(SCE/SCT)
+
+def SCE(Y,droite_regression):
+    sum = 0
+    for i in range(len(Y)):
+        sum+= (Y[i]-droite_regression[i])*(Y[i]-droite_regression[i])
+    return sum
+
+def SCT(Y,mean_y):
+    sum = 0
+    for i in range(len(Y)):
+        sum+= (Y[i]-mean_y)*(Y[i]-mean_y)
+    return sum

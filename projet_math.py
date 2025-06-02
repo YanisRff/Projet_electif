@@ -64,7 +64,6 @@ if __name__ == '__main__':
 
 
     plt.plot(X, Y, "ob")
-    plt.show()
 
     covariance_xy = covariance(X,Y,moyenne_x,moyenne_y)
 
@@ -77,3 +76,19 @@ if __name__ == '__main__':
     b0 = coefficient_regression_b0(moyenne_y,b1,moyenne_x)
 
     print("Coefficient regression b0 :",b0)
+
+    droite_reg = droite_regression(b0,b1,X)
+
+    print("Points droite regression : ",droite_reg)
+
+    plt.plot(droite_reg, "-gs")
+
+    plt.show()
+
+    sce = SCE(Y,droite_reg)
+    sct = SCT(Y,moyenne_y)
+
+    R2 =coefficient_determination_r2(sce,sct)
+    print("SCE :", sce)
+    print("SCT : ",sct)
+    print("Coefficient de détermination : ", R2)
