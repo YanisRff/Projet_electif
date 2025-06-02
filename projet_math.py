@@ -1,5 +1,5 @@
 from fonctions import *
-import numpy as np
+
 
 if __name__ == '__main__':
 
@@ -91,6 +91,8 @@ if __name__ == '__main__':
     plt.plot(ligne_x, droite_regression, color='red', label='Droite de régression')
     plt.show()
 
+    "----------------------------------- PARTIE 3 -----------------------------------"
+
     sce = SCE(Y,droite_reg)
     sct = SCT(Y,moyenne_y)
     scr = SCR(moyenne_y,droite_reg)
@@ -111,11 +113,16 @@ if __name__ == '__main__':
 
     print("RMSE : ",rmse)
 
+    "----------------------------------- PARTIE 4 -----------------------------------"
 
-    std_error = standard_error(rmse,variance_x)
+    std_error = standard_error(X,rmse,moyenne_x)
 
     print("Erreurs standards de la pende SEb1: ",std_error)
 
-    std_error_origin = standard_error_origin(rmse,moyenne_x,nombre_observation,variance_x)
+    std_error_origin = standard_error_origin(X,rmse,nombre_observation,moyenne_x)
 
     print("Erreur standard de l'ordonnée à l'origine : ",std_error_origin)
+
+    statistique_test = statistique_t(b1,std_error)
+
+    print(ttest_ind(X,Y))
