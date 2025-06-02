@@ -21,6 +21,8 @@ if __name__ == '__main__':
         X.append(ensemble_points[i][0])
         Y.append(ensemble_points[i][1])
 
+    print("X: ",X)
+    print("Y: ",Y)
     moyenne_x = mean(X)
     moyenne_y = mean(Y)
 
@@ -68,6 +70,10 @@ if __name__ == '__main__':
 
     print("Covariance xy : ",covariance_xy)
 
-    coefficient_reg_b1 = coefficient_regression_b1(covariance_xy, variance_x)
+    b1 = coefficient_regression_b1(covariance_xy, variance_x)
 
-    print("Coefficient regression b1 : ",coefficient_reg_b1)
+    print("Coefficient regression b1 : ",b1)
+
+    b0 = coefficient_regression_b0(moyenne_y,b1,moyenne_x)
+
+    print("Coefficient regression b0 :",b0)

@@ -20,7 +20,7 @@ def variance(arr,mean):
     var = 0
     for i in range(len(arr)):
         var+= (arr[i]-mean)*(arr[i]-mean)
-    return var/len(arr)
+    return var/(len(arr)-1)
 
 def ecart_type(variance):
     # Calcule la ecart-type en prenant une variance en entrée
@@ -46,7 +46,7 @@ def etendue(max,min):
 def covariance(X,Y,mean_x,mean_y):
     sum = 0
     for i in range(len(X)):
-        sum+= (X[i]-mean_x)*(Y[i]-mean_y)
+        sum+= (X[i]-mean_x)*(Y[i]-mean_y)/(len(X)-1)
     return sum
 
 def coefficient_regression_b1(cov,var):
