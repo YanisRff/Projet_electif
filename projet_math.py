@@ -63,3 +63,11 @@ if __name__ == '__main__':
 
     plt.plot(X, Y, "ob")
     plt.show()
+
+    covariance_xy = covariance(X,Y,moyenne_x,moyenne_y)
+
+    print("Covariance xy : ",covariance_xy)
+
+    coefficient_reg_b1 = coefficient_regression_b1(covariance_xy, variance_x)
+
+    print("Coefficient regression b1 : ",coefficient_reg_b1)
