@@ -11,7 +11,7 @@ def mean(arr):
 def mediane(arr):
     n = len(arr)
     if n%2==0:
-        mediane = (arr[n//2] + arr[(n//2) + 1])/2
+        mediane = (arr[n//(2-1)] + arr[(n//2) + 1])/2
     else:
         mediane = arr[(n+1)//2]
     return mediane
@@ -26,7 +26,7 @@ def ecart_type(variance):
     # Calcule la ecart-type en prenant une variance en entrée
     return sqrt(variance)
 
-def min(arr):
+def v_min(arr):
     min = inf
     for i in range(len(arr)):
         if arr[i] < min:
@@ -34,7 +34,7 @@ def min(arr):
 
     return min
 
-def max(arr):
+def v_max(arr):
     max = -inf
     for i in range(len(arr)):
         if arr[i] > max:
@@ -46,8 +46,8 @@ def etendue(max,min):
 def covariance(X,Y,mean_x,mean_y):
     sum = 0
     for i in range(len(X)):
-        sum+= (X[i]-mean_x)*(Y[i]-mean_y)/(len(X)-1)
-    return sum
+        sum+= (X[i]-mean_x)*(Y[i]-mean_y)
+    return sum/(len(X)-1)
 
 def coefficient_regression_b1(cov,var):
     return cov/var
@@ -57,8 +57,8 @@ def coefficient_regression_b0(mean_y,b1,mean_x):
 
 def droite_regression(b0,b1,X):
     y = []
-    for i in range(0,7):
-        y.append(b0+b1*i)
+    for i in range(len(X)):
+        y.append(b0+b1*X[i])
     return y
 
 def coefficient_determination_r2(SCE,SCT):
@@ -75,3 +75,26 @@ def SCT(Y,mean_y):
     for i in range(len(Y)):
         sum+= (Y[i]-mean_y)*(Y[i]-mean_y)
     return sum
+
+def SCR(mean_y,droite_regression):
+    sum=0
+    for i in range(len(droite_regression)):
+        sum+= (droite_regression[i]-mean_y)*(droite_regression[i]-mean_y)
+    return sum
+def residus(Y,droite_regression):
+    y=[]
+    for i in range(len(Y)):
+        y.append(Y[i]-droite_regression[i])
+    return y
+
+def mean_squared_error(SCE,nombre_observation):
+    return SCE/(nombre_observation-2)
+
+def RMSE(MSE):
+    return sqrt(MSE)
+
+def standard_error(RMSE,var):
+    return RMSE/(sqrt(var))
+
+def standard_error_origin(rmse,mean,nombre_observation,var):
+    return rmse*sqrt((1/nombre_observation)+ (mean*mean)/var)

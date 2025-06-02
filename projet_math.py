@@ -1,5 +1,5 @@
 from fonctions import *
-
+import numpy as np
 
 if __name__ == '__main__':
 
@@ -15,12 +15,16 @@ if __name__ == '__main__':
 
     ensemble_points = [M_1, M_2, M_3, M_4, M_5, M_6, M_7]
 
+
     for i in range(len(ensemble_points)):
         """Le tableau ensemble_points est un talbeau de points bi-dimensionnels, on répartit donc les valeurs de
         X et de Y dans des tableau différents afin de pouvoir les étudier"""
         X.append(ensemble_points[i][0])
         Y.append(ensemble_points[i][1])
+    nombre_observation = len(X)
 
+
+    "----------------------------------- PARTIE 1 -----------------------------------"
     print("X: ",X)
     print("Y: ",Y)
     moyenne_x = mean(X)
@@ -47,11 +51,11 @@ if __name__ == '__main__':
     print("Ecart type X : ",ecart_type_x)
     print("Ecart type Y : ",ecart_type_y)
 
-    min_x = min(X)
-    max_x = max(X)
+    min_x = v_min(X)
+    max_x = v_max(X)
 
-    min_y = min(Y)
-    max_y = max(Y)
+    min_y = v_min(Y)
+    max_y = v_max(Y)
 
     print("Maximum de X : ",max_x, ", Minimum de X :",min_x)
     print("Maximum de Y : ", max_y, ", Minimum de Y :", min_y)
@@ -65,6 +69,7 @@ if __name__ == '__main__':
 
     plt.plot(X, Y, "ob")
 
+    "----------------------------------- PARTIE 2 -----------------------------------"
     covariance_xy = covariance(X,Y,moyenne_x,moyenne_y)
 
     print("Covariance xy : ",covariance_xy)
@@ -81,14 +86,36 @@ if __name__ == '__main__':
 
     print("Points droite regression : ",droite_reg)
 
-    plt.plot(droite_reg, "-gs")
-
+    ligne_x = np.linspace(v_min(X), v_max(X), 100)
+    droite_regression = b0 + b1 * ligne_x
+    plt.plot(ligne_x, droite_regression, color='red', label='Droite de régression')
     plt.show()
 
     sce = SCE(Y,droite_reg)
     sct = SCT(Y,moyenne_y)
+    scr = SCR(moyenne_y,droite_reg)
 
     R2 =coefficient_determination_r2(sce,sct)
+
     print("SCE :", sce)
     print("SCT : ",sct)
+    print("SCR : ",scr)
+    print("SCR/SCT : ",scr/sct)
     print("Coefficient de détermination : ", R2)
+
+    mse = mean_squared_error(sce,nombre_observation)
+
+    print("MSE : ",mse)
+
+    rmse = RMSE(mse)
+
+    print("RMSE : ",rmse)
+
+
+    std_error = standard_error(rmse,variance_x)
+
+    print("Erreurs standards de la pende SEb1: ",std_error)
+
+    std_error_origin = standard_error_origin(rmse,moyenne_x,nombre_observation,variance_x)
+
+    print("Erreur standard de l'ordonnée à l'origine : ",std_error_origin)
