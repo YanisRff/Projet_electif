@@ -43,3 +43,16 @@ def max(arr):
 
 def etendue(max,min):
     return max-min
+
+def coefficient_regression_b1(cov,var):
+    return cov/var
+
+def coefficient_regression_b(mean_y,b1,mean_x):
+    return mean_y-b1*mean_x
+
+def droite_regression(b0,b1,X):
+    y = []
+    for i in range(len(X)):
+        y.append(b0+b1*X)
+    return y
+

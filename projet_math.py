@@ -62,5 +62,4 @@ if __name__ == '__main__':
 
 
     plt.plot(X, Y, "ob")
-
     plt.show()
