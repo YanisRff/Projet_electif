@@ -60,6 +60,8 @@ if __name__ == '__main__':
     ensemble_points = [M_1, M_2, M_3, M_4, M_5, M_6, M_7]
 
     for i in range(len(ensemble_points)):
+        """Le tableau ensemble_points est un talbeau de points bi-dimensionnels, on répartit donc les valeurs de
+        X et de Y dans des tableau différents afin de pouvoir les étudier"""
         X.append(ensemble_points[i][0])
         Y.append(ensemble_points[i][1])
 
