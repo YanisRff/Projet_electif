@@ -183,10 +183,10 @@ def dist_min(ensemble_de_points,distance_func=dist):
     return pair, min_d
 
 
-def cluster_hierarchique(points, method='single'):
+def cluster_hierarchique(ensemble_de_points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
-    data = np.array(points)
+    data = np.array(ensemble_de_points)
     Z = linkage(data, method=method, metric='euclidienn')
     return Z
 
