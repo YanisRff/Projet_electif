@@ -40,8 +40,8 @@ if __name__ == '__main__':
     print("Médiane X : ",mediane_x)
     print("Médiane Y : ",mediane_y)
 
-    variance_x = variance(X,moyenne_x)
-    variance_y = variance(Y,moyenne_y)
+    variance_x = variance(X)
+    variance_y = variance(Y)
 
     print("Variance X: ",variance_x)
     print("Variance Y: ",variance_y)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     plt.plot(X, Y, "ob")
 
     "----------------------------------- PARTIE 2 -----------------------------------"
-    covariance_xy = covariance(X,Y,moyenne_x,moyenne_y)
+    covariance_xy = covariance(X,Y)
 
     print("Covariance xy : ",covariance_xy)
 
