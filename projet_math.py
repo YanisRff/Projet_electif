@@ -93,7 +93,8 @@ if __name__ == '__main__':
     plt.show()
 
     "----------------------------------- PARTIE 3 -----------------------------------"
-
+    residu = residus(Y,droite_reg)
+    print("Résidus :" ,residu)
     sce = SCE(Y,droite_reg)
     sct = SCT(Y,moyenne_y)
     scr = SCR(moyenne_y,droite_reg)
@@ -124,6 +125,14 @@ if __name__ == '__main__':
 
     print("Erreur standard de l'ordonnée à l'origine : ",std_error_origin)
 
-    statistique_test = statistique_t(b1,std_error)
+    statistique_test_b1 = statistique_t(b1,std_error)
 
+    print("statistique de test b1 : ",statistique_test_b1)
+
+    statistique_test_b0 = statistique_t(b0,std_error_origin)
+
+    print("statistique de test b0 : ", statistique_test_b0)
+
+    print("intervalle de confiance : [ ",b1-2.571*std_error,";",b1+2.571*std_error,"]")
+    print("intervalle de confiance : [ ",b0-2.571*std_error_origin,";",b0+2.571*std_error_origin,"]")
     print(ttest_ind(X,Y))

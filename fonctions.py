@@ -105,11 +105,13 @@ def mean_squared_error(SCE,nombre_observation):
 def RMSE(MSE):
     return sqrt(MSE)
 
+
 def standard_error(X,RMSE,mean):
     sum=0
     for i in range(len(X)):
         sum+= (X[i]-mean)**2
     return RMSE/(sqrt(sum))
+
 
 def standard_error_origin(X,rmse,nombre_observation,mean):
     sum = 0
@@ -117,6 +119,7 @@ def standard_error_origin(X,rmse,nombre_observation,mean):
         sum += (X[i] - mean) ** 2
 
     return rmse*sqrt((1/nombre_observation) + (mean**2)/sum)
+
 
 def statistique_t(b1,std_error):
     return b1/std_error
