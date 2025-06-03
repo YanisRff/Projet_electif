@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     matrice = remplissage_matrice(points)
 
-    print(cluster_hierarchique(points, method='single'))
+    print(cluster_hierarchique(points, method='ward'))
+
 
 
     repaire(points)
-
