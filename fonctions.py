@@ -137,16 +137,20 @@ def dist_euclidienne(X, Y):
     """
     Distance euclidienne entre deux points
     """
+    distance_euclidenne = []
     for i in range(len(X)-1) :
-        distance = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
-    return distance
+        dist = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
+        distance.append(dist)
+    return distance_euclidenne
 
 def dist_Manhattan(X, Y):
     """
     Distance de Manhattan (L1) entre deux points
     """
+    distance_Manhattan = []
     for i in range(len(X)-1):
-        distance_Manhattan = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
+        Manhattan = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
+        distance.append(Manhattan)
     return distance_Manhattan
 
 
@@ -162,14 +166,15 @@ def dist_chebyshev(X, Y):
 def dist_min(X,Y,distance_func=dist):
     """
     Paire de points la plus proche dans la liste (X,Y)
+    En gros on connait les 2 points les plus proches
     """
-    min_d = inf
+    min_distance = inf
     pair = (None, None) """ou (0,0) je sais pas """
-    n = len(points)
+    n = len(X)
     for i in range(n):
         for j in range(i + 1, n):
             d = distance_func(points[i], points[j])
-            if d < min_d:
+            if d < min_distance:
                 min_d = d
                 pair = (points[i], points[j])
     return pair, min_d
