@@ -4,7 +4,7 @@ from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
     sum=0
@@ -216,19 +216,22 @@ def repaire(points):
     plt.show()
 
 
-def cluster_hierarchique(points, method='single'):
+def cluster_hierarchique(points, method='single', seuil=2.0):
     """
-   Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
+    Classification Ascendante Hiérarchique (CAH) sur la liste de points,
+    avec affichage du dendrogramme et ligne de coupure.
+    """
     data = np.array(points)
     Z = linkage(data, method=method, metric='euclidean')
-    plt.figure(figsize=(8, 4))
     dendrogram(Z)
+    plt.axhline(y=seuil, color='black', linestyle='--')  # ligne de coupure
     plt.title('Dendrogramme CAH')
     plt.xlabel('Points')
     plt.ylabel('Distance')
     plt.show()
 
-    return Z
+    clusters = fcluster(Z, t=seuil, criterion='distance')
+    return Z, clusters
 
 def tracer_cercle(point1,point2):
 
