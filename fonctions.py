@@ -3,8 +3,8 @@ from math import sqrt,inf
 from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
-from scipy.cluster.hierarchy import linkage, dendrogram
+from matplotlib.patches import Ellipse
+from scipy.cluster.hierarchy import linkage, dendrogram,fcluster
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
     sum=0
@@ -142,32 +142,31 @@ def statistique_t(b1,std_error):
 
 """--------------------PARTIE 5------------------"""
 
-def dist_euclidienne(point1, point2):
+def dist_euclidienne(p1, p2):
     """
     Distance euclidienne entre deux points
     """
-    dist = sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+    dist = sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
     return dist
 
-def dist_manhattan(point1, point2):
+def dist_manhattan(p1, p2):
     """
     Distance de Manhattan (L1) entre deux points
     """
-    dist = abs(point2[0] - point1[0]) + abs(point2[1] - point1[1])
+    dist = abs(p2[0] - p1[0]) + abs(p2[1] - p1[1])
 
     return dist
 
 
-def dist_chebyshev(point1, point2):
+def dist_chebyshev(p1, p2):
     """
     Distance Chebyshev entre deux points
     """
-    dist = max(abs(point1[0] - point2[0]), abs(point1[1]- point2[1]))
+    dist = max(abs(p1[0] - p2[0]), abs(p1[1]- p2[1]))
 
     return dist
 
 
-points = [(1, 1), (1, 2), (1, 5), (3, 4), (4, 3), (6, 2), (0, 4)]
 def dist_min(points,distance_func):
     """
     Paire de points la plus proche dans la liste (X,Y)
@@ -199,8 +198,7 @@ def remplissage_matrice(ensemble_points):
 def repaire(points):
     X=[]
     Y=[]
-    fig, ax = plt.subplots()
-    (point1,point2),d_min = dist_min(points,dist_euclidienne)
+    fig, add = plt.subplots()
 
 
     for i in range(len(points)):
@@ -209,11 +207,44 @@ def repaire(points):
 
     plt.scatter(X,Y,color='black')
 
+    (p1, p2), d_min = dist_min(points, dist_euclidienne)
 
-    cercle = tracer_cercle(point1,point2)
+    centre_points = ((p1[0]+p2[0])/2,(p1[1]+p2[1])/2)
+    points.remove(p1)
+    points.remove(p2)
+    ellipse = tracer_ellipse(p1, p2)
+    add.add_patch(ellipse)
 
-    ax.add_patch(cercle)
+
+    while points != []:
+
+        (p1,p2) = proche_voisin(centre_points,points)
+
+        centre_points = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+
+        points.remove(p2)
+
+        ellipse = tracer_ellipse(p1, p2)
+        add.add_patch(ellipse)
+
+    print(points)
+
+
+
+
     plt.show()
+
+def proche_voisin(centre,points):
+    min_distance = inf
+    pair = (None, None)
+    n = len(points)
+    for i in range(n):
+        d = dist_euclidienne(centre, points[i])
+        if d < min_distance:
+            min_distance = d
+            pair = (centre, points[i])
+
+    return pair
 
 
 def cluster_hierarchique(points, method='single'):
@@ -230,8 +261,17 @@ def cluster_hierarchique(points, method='single'):
 
     return Z
 
-def tracer_cercle(point1,point2):
+def tracer_ellipse(p1,p2):
+    distance = dist_euclidienne(p1,p2)
+    centre = ((p1[0]+p2[0])/2,(p1[1]+p2[1])/2)
 
-    centre = ((point1[0]+point2[0])/2,(point1[1]+point2[1])/2)
-    cercle = Circle(centre, radius=1, edgecolor='r', facecolor='none')
-    return cercle
+    largeur = abs(p1[0] - p2[0]) * 2.2  # marge sur x
+    hauteur = abs(p1[1] - p2[1]) * 2.2  # marge sur y
+
+    largeur = max(largeur, 0.5)
+    hauteur = max(hauteur, 0.5)
+
+    ellipse = Ellipse((centre[0], centre[1]), largeur,hauteur,facecolor='none',edgecolor='red')
+    
+    return ellipse
+
