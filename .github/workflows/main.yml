@@ -1,12 +1,15 @@
-name: Merge main into all branches
+name: Merge main into all branches on PR merge
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
 jobs:
   merge-main:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
@@ -19,12 +22,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Get all remote branches
+      - name: Fetch all branches and merge main
         run: |
           git fetch origin
           for branch in $(git branch -r | grep -v 'main' | sed 's/origin\///'); do
-            echo "Merging into $branch..."
+            echo "Merging main into $branch..."
             git checkout $branch
-            git merge origin/main --no-edit || echo "Merge conflict in $branch, skipping..."
-            git push origin $branch || echo "Push failed for $branch"
+            git merge origin/main --no-edit || echo "⚠️ Merge conflict in $branch, skipping..."
+            git push origin $branch || echo "⚠️ Push failed for $branch"
           done
