@@ -146,15 +146,18 @@ def dist_euclidienne(point1, point2):
     """
     Distance euclidienne entre deux points
     """
-    dist = sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
-    return dist
+    dist = 0
+    for i in range (len(point1)):
+        dist += (point2[i] - point1[i]) ** 2
+    return sqrt(dist)
 
 def dist_manhattan(point1, point2):
     """
     Distance de Manhattan (L1) entre deux points
     """
-    dist = abs(point2[0] - point1[0]) + abs(point2[1] - point1[1])
-
+    dist = 0
+    for i in range (len(point1)):
+        dist += abs(point2[i] - point1[i])
     return dist
 
 
@@ -162,8 +165,9 @@ def dist_chebyshev(point1, point2):
     """
     Distance Chebyshev entre deux points
     """
-    dist = max(abs(point1[0] - point2[0]), abs(point1[1]- point2[1]))
-
+    for i in range (len(point1)):
+        distance[i] = abs(point1[i] - point2[i])
+    dist = max(distance)
     return dist
 
 
