@@ -178,10 +178,12 @@ def dist_min(points,distance_func):
     for i in range(n):
         for j in range(i + 1, n):
             d = distance_func(points[i],points[j])
+            print(d)
             if d < min_distance:
-                min_d = d
+                min_distance = d
                 pair = (points[i],points[j])
-    return pair, min_d
+
+    return pair, min_distance
 
 
 def cluster_hierarchique(points, method='single'):
