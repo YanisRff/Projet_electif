@@ -3,6 +3,7 @@ from math import sqrt,inf
 from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
 from scipy.cluster.hierarchy import linkage, dendrogram
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -198,16 +199,23 @@ def remplissage_matrice(ensemble_points):
 def repaire(points):
     X=[]
     Y=[]
-    (X_min,Y_min),d_min = dist_min(points,dist_euclidienne)
+    fig, ax = plt.subplots()
+    (point1,point2),d_min = dist_min(points,dist_euclidienne)
+
+
     for i in range(len(points)):
         X.append(points[i][0])
         Y.append(points[i][1])
 
     plt.scatter(X,Y,color='black')
 
-    plt.scatter(X_min,Y_min,color='red')
-    plt.plot(X_min,Y_min,color='red')
+
+    cercle = tracer_cercle(point1,point2)
+
+    ax.add_patch(cercle)
     plt.show()
+
+
 def cluster_hierarchique(points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
@@ -222,17 +230,8 @@ def cluster_hierarchique(points, method='single'):
 
     return Z
 
+def tracer_cercle(point1,point2):
 
-def dendrogramme_dessin(Z, labels=None, title='Dendrogramme'):
-    """
-    Trace un dendrogramme à partir de la matrice
-"""
-    plt.figure(figsize=(8, 5))
-    dendrogram(Z, labels=labels)
-    plt.title(title)
-    plt.xlabel('Points')
-    plt.ylabel('Distance')
-    plt.tight_layout()
-    plt.show()
-
-
+    centre = ((point1[0]+point2[0])/2,(point1[1]+point2[1])/2)
+    cercle = Circle(centre, radius=1, edgecolor='r', facecolor='none')
+    return cercle
