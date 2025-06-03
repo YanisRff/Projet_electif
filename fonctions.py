@@ -158,9 +158,10 @@ def dist_chebyshev(X, Y):
     """
     Distance Chebyshev entre deux points
     """
-    dist_chebyshev()
+    distance_chebyshev = []
     for i in range (len(X)-1):
-        distance_chebyshev = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
+        dist = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
+        distance_chebyshev.append(dist)
     return distance_chebyshev
 
 
