@@ -220,22 +220,32 @@ def repaire(points):
     plt.show()
 
 
-def cluster_hierarchique(points, method='single', seuil=2.0):
+def seuil_max_gap(Z):
+    distances = Z[:, 2]
+    gaps = np.diff(distances)
+    index_max_gap = np.argmax(gaps)
+    seuil = (distances[index_max_gap] + distances[index_max_gap + 1]) / 2
+    return seuil
+
+def cluster_hierarchique(points, method='single', seuil=None):
     """
-    Classification Ascendante Hiérarchique (CAH) sur la liste de points,
-    avec affichage du dendrogramme et ligne de coupure.
+    Classification Ascendante Hiérarchique (CAH) avec seuil automatique si non fourni.
     """
     data = np.array(points)
     Z = linkage(data, method=method, metric='euclidean')
+
+    if seuil is None:
+        seuil = seuil_max_gap(Z)
+
     dendrogram(Z)
-    plt.axhline(y=seuil, color='black', linestyle='--')  # ligne de coupure
-    plt.title('Dendrogramme CAH')
+    plt.axhline(y=seuil, color='black', linestyle='--')
+    plt.title('Dendrogramme CAH (seuil auto)' if seuil else 'Dendrogramme CAH')
     plt.xlabel('Points')
     plt.ylabel('Distance')
     plt.show()
 
     clusters = fcluster(Z, t=seuil, criterion='distance')
-    return Z, clusters
+    return Z, clusters, seuil
 
 def tracer_cercle(point1,point2):
 
