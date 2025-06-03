@@ -3,7 +3,6 @@ from math import sqrt,inf
 from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -171,7 +170,6 @@ def dist_chebyshev(point1, point2):
     return dist
 
 
-points = [(1, 1), (1, 2), (1, 5), (3, 4), (4, 3), (6, 2), (0, 4)]
 def dist_min(points,distance_func):
     """
     Paire de points la plus proche dans la liste (X,Y)
@@ -189,22 +187,10 @@ def dist_min(points,distance_func):
 
     return pair, min_distance
 
-def remplissage_matrice(ensemble_points):
-    matrice=[]
-    ligne=[]
-    for i in range(len(ensemble_points)):
-        for j in range(len(ensemble_points)):
-            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
-        matrice.append(ligne)
-        ligne=[]
-    return matrice
-
 
 def repaire(points):
     X=[]
     Y=[]
-    fig, ax = plt.subplots()
-    (point1,point2),d_min = dist_min(points,dist_euclidienne)
 
 
     for i in range(len(points)):
@@ -213,10 +199,17 @@ def repaire(points):
 
     plt.scatter(X,Y,color='black')
 
+    while len(points)>1:
+        (p1,p2),distance = dist_min(points,dist_euclidienne)
+        new_point = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2]
+        plt.pause(0.5)
+        points.append(new_point)
+        plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='blue')
+        if(p1):
+            points.remove(p1)
+        if(p2):
+            points.remove(p2)
 
-    cercle = tracer_cercle(point1,point2)
-
-    ax.add_patch(cercle)
     plt.show()
 
 
@@ -247,8 +240,3 @@ def cluster_hierarchique(points, method='single', seuil=None):
     clusters = fcluster(Z, t=seuil, criterion='distance')
     return Z, clusters, seuil
 
-def tracer_cercle(point1,point2):
-
-    centre = ((point1[0]+point2[0])/2,(point1[1]+point2[1])/2)
-    cercle = Circle(centre, radius=1, edgecolor='r', facecolor='none')
-    return cercle
