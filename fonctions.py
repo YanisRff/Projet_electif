@@ -166,27 +166,28 @@ def dist_chebyshev(X, Y):
     return distance_chebyshev
 
 
-def dist_min(ensemble_de_points,distance_func=dist):
+points = [(1, 1), (1, 2), (1, 5), (3, 4), (4, 3), (6, 2), (0, 4)]
+def dist_min(points,distance_func=dist):
     """
     Paire de points la plus proche dans la liste (X,Y)
     En gros on connait les 2 points les plus proches
     """
     min_distance = inf
     pair = (None, None)
-    n = len(ensemble_de_points)
+    n = len(points)
     for i in range(n):
         for j in range(i + 1, n):
-            d = distance_func(ensemble_de_points[i],ensemble_de_points[j])
+            d = distance_func(points[i],points[j])
             if d < min_distance:
                 min_d = d
-                pair = (ensemble_de_points[i], ensemble_de_points[j])
+                pair = (points[i],points[j])
     return pair, min_d
 
 
-def cluster_hierarchique(ensemble_de_points, method='single'):
+def cluster_hierarchique(points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
-    data = np.array(ensemble_de_points)
+    data = np.array(points)
     Z = linkage(data, method=method, metric='euclidienn')
     return Z
 
