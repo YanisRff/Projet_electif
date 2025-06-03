@@ -13,6 +13,9 @@ if __name__ == '__main__':
     ]
     labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7']
 
+    print(dist_euclidienne(points[0],points[1]))
+    print(dist_manhattan(points[0],points[1]))
+    print(dist_chebyshev(points[0],points[1]))
 
     (X_min, Y_min), d_min = dist_min(points, distance_func=dist)
     print(f"Paire la plus proche : {X_min} – {Y_min}  (distance = {d_min:.2f})")

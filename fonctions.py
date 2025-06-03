@@ -141,36 +141,29 @@ def statistique_t(b1,std_error):
 
 """--------------------PARTIE 5------------------"""
 
-def dist_euclidienne(X, Y):
+def dist_euclidienne(point1, point2):
     """
     Distance euclidienne entre deux points
     """
-    distance_euclidienne = []
-    for i in range(len(X)-1) :
-        dist = sqrt((X[i] - X[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
-        distance_euclidienne.append(dist)
-    return distance_euclidienne
+    dist = sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+    return dist
 
-def dist_Manhattan(X, Y):
+def dist_manhattan(point1, point2):
     """
     Distance de Manhattan (L1) entre deux points
     """
-    distance_Manhattan = []
-    for i in range(len(X)-1):
-        dist = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
-        distance_Manhattan.append(dist)
-    return distance_Manhattan
+    dist = abs(point2[0] - point1[0]) + abs(point2[1] - point1[1])
+
+    return dist
 
 
-def dist_chebyshev(X, Y):
+def dist_chebyshev(point1, point2):
     """
     Distance Chebyshev entre deux points
     """
-    distance_chebyshev = []
-    for i in range (len(X)-1):
-        dist = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
-        distance_chebyshev.append(dist)
-    return distance_chebyshev
+    dist = max(abs(point1[0] - point2[0]), abs(point1[1]- point2[1]))
+
+    return dist
 
 
 points = [(1, 1), (1, 2), (1, 5), (3, 4), (4, 3), (6, 2), (0, 4)]
