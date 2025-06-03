@@ -185,7 +185,31 @@ def dist_min(points,distance_func):
 
     return pair, min_distance
 
+def remplissage_matrice(ensemble_points):
+    matrice=[]
+    ligne=[]
+    for i in range(len(ensemble_points)):
+        for j in range(len(ensemble_points)):
+            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
+        matrice.append(ligne)
+        ligne=[]
+    return matrice
 
+
+def repaire(points):
+    X=[]
+    Y=[]
+    (X_min,Y_min),d_min = dist_min(points,dist_euclidienne)
+    for i in range(len(points)):
+        X.append(points[i][0])
+        Y.append(points[i][1])
+
+    for i in range(len(points)):
+        plt.scatter(X,Y,color='black')
+
+    plt.scatter(X_min,Y_min,color='red')
+    plt.plot(X_min,Y_min,color='red')
+    plt.show()
 def cluster_hierarchique(points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
