@@ -140,7 +140,7 @@ def dist_euclidienne(X, Y):
     distance_euclidienne = []
     for i in range(len(X)-1) :
         dist = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
-        distance.append(dist)
+        distance_euclidienne.append(dist)
     return distance_euclidienne
 
 def dist_Manhattan(X, Y):
@@ -149,8 +149,8 @@ def dist_Manhattan(X, Y):
     """
     distance_Manhattan = []
     for i in range(len(X)-1):
-        Manhattan = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
-        distance.append(Manhattan)
+        dist = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
+        distance_Manhattan.append(dist)
     return distance_Manhattan
 
 
@@ -158,6 +158,7 @@ def dist_chebyshev(X, Y):
     """
     Distance Chebyshev entre deux points
     """
+    dist_chebyshev()
     for i in range (len(X)-1):
         distance_chebyshev = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
     return distance_chebyshev
@@ -180,7 +181,7 @@ def dist_min(X,Y,distance_func=dist):
     return pair, min_d
 
 
-def hierarchic_cluster(points, method='single'):
+def cluster_hierarchique(points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
     data = np.array(points)
@@ -188,7 +189,7 @@ def hierarchic_cluster(points, method='single'):
     return Z
 
 
-def plot_dendrogramme(Z, labels=None, title='Dendrogramme'):
+def dendrogramme_dessin(Z, labels=None, title='Dendrogramme'):
     """
     Trace un dendrogramme à partir de la matrice
 """
@@ -222,7 +223,7 @@ if __name__ == '__main__':
     print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
 
 
-    Z = hierarchic_cluster(points, method='single')
+    Z = cluster_hierarchique(points, method='single')
 
 
-    plot_dendrogramme(Z, labels=labels, title='Dendrogramme CAH ')
+    dendrogramme_dessin(Z, labels=labels, title='Dendrogramme CAH ')
