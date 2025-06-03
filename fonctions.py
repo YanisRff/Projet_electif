@@ -3,8 +3,13 @@ from math import sqrt,inf
 from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
+
 from matplotlib.patches import Ellipse
 from scipy.cluster.hierarchy import linkage, dendrogram,fcluster
+
+from matplotlib.patches import Circle
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
     sum=0
@@ -247,31 +252,20 @@ def proche_voisin(centre,points):
     return pair
 
 
-def cluster_hierarchique(points, method='single'):
+def cluster_hierarchique(points, method='single', seuil=2.0):
     """
-   Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
+    Classification Ascendante Hiérarchique (CAH) sur la liste de points,
+    avec affichage du dendrogramme et ligne de coupure.
+    """
     data = np.array(points)
     Z = linkage(data, method=method, metric='euclidean')
-    plt.figure(figsize=(8, 4))
     dendrogram(Z)
+    plt.axhline(y=seuil, color='black', linestyle='--')  # ligne de coupure
     plt.title('Dendrogramme CAH')
     plt.xlabel('Points')
     plt.ylabel('Distance')
     plt.show()
 
-    return Z
-
-def tracer_ellipse(p1,p2):
-    distance = dist_euclidienne(p1,p2)
-    centre = ((p1[0]+p2[0])/2,(p1[1]+p2[1])/2)
-
-    largeur = abs(p1[0] - p2[0]) * 2.2  # marge sur x
-    hauteur = abs(p1[1] - p2[1]) * 2.2  # marge sur y
-
-    largeur = max(largeur, 0.5)
-    hauteur = max(hauteur, 0.5)
-
-    ellipse = Ellipse((centre[0], centre[1]), largeur,hauteur,facecolor='none',edgecolor='red')
-    
-    return ellipse
+    clusters = fcluster(Z, t=seuil, criterion='distance')
+    return Z, clusters
 

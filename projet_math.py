@@ -145,4 +145,3 @@ if __name__ == '__main__':
     p_value_b0 = 2*t.sf(abs(statistique_test_b0), df=5)
     print("La P-valeur pour l'hypothèse H0:B0=0 : ",p_value_b0)
     print("La P-valeur est inférieure à 0.05, on rejette donc H0")
-
