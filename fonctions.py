@@ -133,33 +133,35 @@ import matplotlib.pyplot as plt
 
 
 """-----------PARTIE 5---------"""
-def dist(X, Y):
+def dist_euclidienne(X, Y):
     """
     Distance euclidienne entre deux points
     """
     for i in range(len(X)-1) :
         distance = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
-
     return distance
 
-def dist1(X, Y):
+def dist_Manhattan(X, Y):
     """
     Distance de Manhattan (L1) entre deux points
     """
-    return abs(X[0] - Y[0]) + abs(X[1] - Y[1])
+    for i in range(len(X)-1):
+        distance_Manhattan = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
+    return distance_Manhattan
 
 
-def dist_inf(X, Y):
+def dist_chebyshev(X, Y):
     """
     Distance Chebyshev entre deux points
     """
-    return max(abs(X[0] - Y[0]), abs(X[1] - Y[1]))
+    for i in range (len(X)-1):
+        distance_chebyshev = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
+    return distance_chebyshev
 
 
-def dist_min(points, distance_func=dist):
+def dist_min(X,Y,distance_func=dist):
     """
-    Paire de points la plus proche dans la liste 'points',
-
+    Paire de points la plus proche dans la liste (X,Y)
     """
     min_d = inf
     pair = (None, None) """ou (0,0) je sais pas """
