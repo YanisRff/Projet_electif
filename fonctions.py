@@ -148,8 +148,14 @@ def dist_euclidienne(p1, p2):
     """
     Distance euclidienne entre deux points
     """
+
     dist = sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
     return dist
+    dist = 0
+    for i in range (len(point1)):
+        dist += (point2[i] - point1[i]) ** 2
+    return sqrt(dist)
+
 
 def dist_manhattan(p1, p2):
     """
@@ -157,6 +163,9 @@ def dist_manhattan(p1, p2):
     """
     dist = abs(p2[0] - p1[0]) + abs(p2[1] - p1[1])
 
+    dist = 0
+    for i in range (len(point1)):
+        dist += abs(point2[i] - point1[i])
     return dist
 
 
