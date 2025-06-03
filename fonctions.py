@@ -137,11 +137,11 @@ def dist_euclidienne(X, Y):
     """
     Distance euclidienne entre deux points
     """
-    distance_euclidenne = []
+    distance_euclidienne = []
     for i in range(len(X)-1) :
         dist = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
         distance.append(dist)
-    return distance_euclidenne
+    return distance_euclidienne
 
 def dist_Manhattan(X, Y):
     """
