@@ -1,33 +1,37 @@
 from fonctions import *
 import csv
-
+import argparse
 if __name__ == '__main__':
-    """
-    points = [
-        (1, 1),
-        (1, 2),
-        (1, 5),
-        (3, 4),
-        (4, 3),
-        (6, 2),
-        (0, 4)
-    ]
-    labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7']
-    """
+    parser = argparse.ArgumentParser(description="Mon programme avec options")
+    parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test",
+                        help="Data à utiliser pour l'exécution du programme")
 
-    labels = []
-    points = []
+    args = parser.parse_args()
 
-    with open('DATA.csv', 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        next(reader)  # Ignorer l'en-tête
+    if args.data == "test":
+        points = [
+            (1, 1),
+            (1, 2),
+            (1, 5),
+            (3, 4),
+            (4, 3),
+            (6, 2),
+            (0, 4)
+        ]
+        labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7']
+    elif args.data == "final":
+        labels = []
+        points = []
+        with open('DATA.csv', 'r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            next(reader)  # Ignorer l'en-tête
 
-        for row in reader:
-            label = row[0]  # Individu XX
-            coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
+            for row in reader:
+                label = row[0]  # Individu XX
+                coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
 
-            labels.append(label)
-            points.append(tuple(coords))  # 9 dimensions
+                labels.append(label)
+                points.append(tuple(coords))  # 9 dimensions
 
     # Exemple d'affichage
     print("labels =", labels)
