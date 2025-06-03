@@ -133,5 +133,17 @@ if __name__ == '__main__':
     print("statistique de test b0 : ", statistique_test_b0)
 
     print("intervalle de confiance : [ ",b1-2.571*std_error,";",b1+2.571*std_error,"]")
+    #La pente n'est pas significative (0 contenu dans l'intervalle de confiance) on ne rejette pas h0
+
     print("intervalle de confiance : [ ",b0-2.571*std_error_origin,";",b0+2.571*std_error_origin,"]")
-    print(ttest_ind(X,Y))
+    #La pente à l'origine est significativement différente de 0, on rejette h0
+
+    p_value_b1 = 2*t.sf(abs(statistique_test_b1), df=5) #on multiplie par 2 car c'est un test bilatéral
+    print("P-valeur pour l'hypothèse H0: b1=0 : ",p_value_b1)
+    print("La P-valeur est supérieure à alpha (0.05) on ne rejette donc pas H0")
+    p_value_b0 = 2*t.sf(abs(statistique_test_b0), df=5)
+    print("La P-valeur pour l'hypothèse H0:B0=0 : ",p_value_b0)
+    print("La P-valeur est inférieure à 0.05, on rejette donc H0")
+
+
+

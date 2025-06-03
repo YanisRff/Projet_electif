@@ -1,6 +1,6 @@
 from math import sqrt
 from math import inf
-from scipy.stats import ttest_ind
+from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
 
