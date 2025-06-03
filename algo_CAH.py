@@ -27,11 +27,11 @@ if __name__ == '__main__':
             coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
 
             labels.append(label)
-            points.append((coords[0], coords[1]))  # Par exemple, uniquement les 2 premières dimensions
+            points.append(tuple(coords))  # 9 dimensions
 
     # Exemple d'affichage
-    print("labels =", labels[:5])
-    print("points =", points[:5])
+    print("labels =", labels)
+    print("points =", points)
 
 
     #(X_min, Y_min), d_min = dist_min(points, dist_euclidienne)
