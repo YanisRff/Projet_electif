@@ -178,7 +178,6 @@ def dist_min(points,distance_func):
     for i in range(n):
         for j in range(i + 1, n):
             d = distance_func(points[i],points[j])
-            print(d)
             if d < min_distance:
                 min_distance = d
                 pair = (points[i],points[j])
@@ -204,8 +203,7 @@ def repaire(points):
         X.append(points[i][0])
         Y.append(points[i][1])
 
-    for i in range(len(points)):
-        plt.scatter(X,Y,color='black')
+    plt.scatter(X,Y,color='black')
 
     plt.scatter(X_min,Y_min,color='red')
     plt.plot(X_min,Y_min,color='red')
@@ -214,7 +212,14 @@ def cluster_hierarchique(points, method='single'):
     """
    Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
     data = np.array(points)
-    Z = linkage(data, method=method, metric='euclidienn')
+    Z = linkage(data, method=method, metric='euclidean')
+    plt.figure(figsize=(8, 4))
+    dendrogram(Z)
+    plt.title('Dendrogramme CAH')
+    plt.xlabel('Points')
+    plt.ylabel('Distance')
+    plt.show()
+
     return Z
 
 
