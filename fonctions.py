@@ -4,11 +4,8 @@ from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
 
-from matplotlib.patches import Ellipse
 from scipy.cluster.hierarchy import linkage, dendrogram,fcluster
 
-from matplotlib.patches import Circle
-from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -203,7 +200,6 @@ def remplissage_matrice(ensemble_points):
 def repaire(points):
     X=[]
     Y=[]
-    fig, add = plt.subplots()
 
 
     for i in range(len(points)):
@@ -213,29 +209,22 @@ def repaire(points):
     plt.scatter(X,Y,color='black')
 
     (p1, p2), d_min = dist_min(points, dist_euclidienne)
-
-    centre_points = ((p1[0]+p2[0])/2,(p1[1]+p2[1])/2)
+    print(p1,p2)
+    temp = p2
+    plt.plot(p1, p2)
     points.remove(p1)
     points.remove(p2)
-    ellipse = tracer_ellipse(p1, p2)
-    add.add_patch(ellipse)
+
 
 
     while points != []:
 
-        (p1,p2) = proche_voisin(centre_points,points)
+        p1 = proche_voisin(temp,points)
+        print(p1)
+        plt.plot([temp[0], p1[0]], [temp[1], p1[1]], color='blue')
 
-        centre_points = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
-
-        points.remove(p2)
-
-        ellipse = tracer_ellipse(p1, p2)
-        add.add_patch(ellipse)
-
-    print(points)
-
-
-
+        temp=p1
+        points.remove(p1)
 
     plt.show()
 
@@ -247,7 +236,7 @@ def proche_voisin(centre,points):
         d = dist_euclidienne(centre, points[i])
         if d < min_distance:
             min_distance = d
-            pair = (centre, points[i])
+            pair = (points[i][0],points[i][1])
 
     return pair
 
