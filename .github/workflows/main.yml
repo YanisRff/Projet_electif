@@ -1,35 +1,33 @@
-name: Update Specific Branches
+name: Merge main into all branches on PR merge
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
 jobs:
-  update-branches:
+  merge-main:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Git
-      run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Update branches
-      run: |
-        # List of branches to update
-        branches=("TL" "Pierre" "Emile" "Yanis")
-
-        # Fetch all branches
-        git fetch --all
-
-        # Loop through each branch and attempt to update
-        for branch in "${branches[@]}"; do
-          git checkout $branch
-          git merge origin/main || echo "Merge conflict in $branch"
-          git push origin $branch || echo "Failed to push $branch"
-        done
+      - name: Fetch all branches and merge main
+        run: |
+          git fetch origin
+          for branch in $(git branch -r | grep -v 'main' | sed 's/origin\///'); do
+            echo "Merging main into $branch..."
+            git checkout $branch
+            git merge origin/main --no-edit || echo "⚠️ Merge conflict in $branch, skipping..."
+            git push origin $branch || echo "⚠️ Push failed for $branch"
+          done
