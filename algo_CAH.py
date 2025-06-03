@@ -55,5 +55,5 @@ if __name__ == '__main__':
     print(cluster_hierarchique(points, method='ward'))
 
 
-
-    repaire(points)
+    if args.data == "test":
+        repaire(points)
