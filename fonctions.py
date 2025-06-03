@@ -195,15 +195,6 @@ def dist_min(points,distance_func):
 
     return pair, min_distance
 
-def remplissage_matrice(ensemble_points):
-    matrice=[]
-    ligne=[]
-    for i in range(len(ensemble_points)):
-        for j in range(len(ensemble_points)):
-            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
-        matrice.append(ligne)
-        ligne=[]
-    return matrice
 
 
 def repaire(points):
@@ -217,23 +208,18 @@ def repaire(points):
 
     plt.scatter(X,Y,color='black')
 
-    (p1, p2), d_min = dist_min(points, dist_euclidienne)
-    print(p1,p2)
-    temp = p2
-    plt.plot(p1, p2)
-    points.remove(p1)
-    points.remove(p2)
 
+    while len(points)>1:
 
-
-    while points != []:
-
-        p1 = proche_voisin(temp,points)
-        print(p1)
-        plt.plot([temp[0], p1[0]], [temp[1], p1[1]], color='blue')
-
-        temp=p1
-        points.remove(p1)
+        (p1,p2),distance = dist_min(points,dist_euclidienne)
+        new_point = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2]
+        plt.pause(0.5)
+        points.append(new_point)
+        plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='blue')
+        if(p1):
+            points.remove(p1)
+        if(p2):
+            points.remove(p2)
 
     plt.show()
 

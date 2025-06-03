@@ -2,7 +2,7 @@ from fonctions import *
 import csv
 
 if __name__ == '__main__':
-    """
+
     points = [
         (1, 1),
         (1, 2),
@@ -13,8 +13,8 @@ if __name__ == '__main__':
         (0, 4)
     ]
     labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7']
-    """
 
+    """
     labels = []
     points = []
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
             labels.append(label)
             points.append(tuple(coords))  # 9 dimensions
-
+    """
     # Exemple d'affichage
     print("labels =", labels)
     print("points =", points)
@@ -47,7 +47,6 @@ if __name__ == '__main__':
 
 
 
-    matrice = remplissage_matrice(points)
 
     print(cluster_hierarchique(points, method='ward', seuil=2.0))
 
