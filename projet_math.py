@@ -40,8 +40,8 @@ if __name__ == '__main__':
     print("Médiane X : ",mediane_x)
     print("Médiane Y : ",mediane_y)
 
-    variance_x = variance(X,moyenne_x)
-    variance_y = variance(Y,moyenne_y)
+    variance_x = variance(X)
+    variance_y = variance(Y)
 
     print("Variance X: ",variance_x)
     print("Variance Y: ",variance_y)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     plt.plot(X, Y, "ob")
 
     "----------------------------------- PARTIE 2 -----------------------------------"
-    covariance_xy = covariance(X,Y,moyenne_x,moyenne_y)
+    covariance_xy = covariance(X,Y)
 
     print("Covariance xy : ",covariance_xy)
 
@@ -146,16 +146,3 @@ if __name__ == '__main__':
     print("La P-valeur pour l'hypothèse H0:B0=0 : ",p_value_b0)
     print("La P-valeur est inférieure à 0.05, on rejette donc H0")
 
-    "----------------------------------- PARTIE 5 -----------------------------------"
-
-    (X_min, Y_min), d_min = dist_min(X,Y, distance_func=dist...)
-    print(f"Paire la plus proche : {X_min} – {Y_min}  (distance = {d_min:.2f})")
-
-    (X_m1, Y_m1), d_m1 = dist_min(X,Y, distance_func=dist...)
-    print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
-
-
-    Z = cluster_hierarchique(X,Y, method='single')
-
-
-    dendrogramme_dessin(Z, labels=labels, title='Dendrogramme CAH ')
