@@ -132,14 +132,15 @@ import matplotlib.pyplot as plt
 
 
 
-"""-----------PARTIE 5---------"""
+"""--------------------PARTIE 5------------------"""
+
 def dist_euclidienne(X, Y):
     """
     Distance euclidienne entre deux points
     """
     distance_euclidienne = []
     for i in range(len(X)-1) :
-        dist = sqrt((X[i] - Y[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
+        dist = sqrt((X[i] - X[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
         distance_euclidienne.append(dist)
     return distance_euclidienne
 
@@ -165,20 +166,20 @@ def dist_chebyshev(X, Y):
     return distance_chebyshev
 
 
-def dist_min(X,Y,distance_func=dist):
+def dist_min(ensemble_de_points,distance_func=dist):
     """
     Paire de points la plus proche dans la liste (X,Y)
     En gros on connait les 2 points les plus proches
     """
     min_distance = inf
-    pair = (None, None) """ou (0,0) je sais pas """
-    n = len(X)
+    pair = (None, None)
+    n = len(ensemble_de_points)
     for i in range(n):
         for j in range(i + 1, n):
-            d = distance_func(points[i], points[j])
+            d = distance_func(ensemble_de_points[i],ensemble_de_points[j])
             if d < min_distance:
                 min_d = d
-                pair = (points[i], points[j])
+                pair = (ensemble_de_points[i], ensemble_de_points[j])
     return pair, min_d
 
 
