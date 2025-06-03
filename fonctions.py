@@ -1,6 +1,7 @@
+
 from math import sqrt
 from math import inf
-from scipy.stats import ttest_ind
+from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -46,6 +47,8 @@ def v_max(arr):
 
 def etendue(max,min):
     return max-min
+
+
 def covariance(X,Y,mean_x,mean_y):
     sum = 0
     for i in range(len(X)):
@@ -63,6 +66,12 @@ def droite_regression(b0,b1,X):
     for i in range(len(X)):
         y.append(b0+b1*X[i])
     return y
+
+    """R^2 \approx 0{,}05 signifie que seulement 5 % de la variabilité des y est expliquée par la variable x
+	•	Cela signifie que la relation linéaire est très faible
+	•	Le modèle linéaire n’explique pratiquement rien des variations observées → le nuage de points est probablement très dispersé ou non linéaire##"""
+
+
 
 def coefficient_determination_r2(SCE,SCT):
     return 1-(SCE/SCT)
@@ -114,3 +123,85 @@ def standard_error_origin(X,rmse,nombre_observation,mean):
 
 def statistique_t(b1,std_error):
     return b1/std_error
+
+
+from math import sqrt, inf
+import numpy as np
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+
+
+
+"""--------------------PARTIE 5------------------"""
+
+def dist_euclidienne(X, Y):
+    """
+    Distance euclidienne entre deux points
+    """
+    distance_euclidienne = []
+    for i in range(len(X)-1) :
+        dist = sqrt((X[i] - X[i+1]) ** 2 + (Y[i] - Y[i+1]) ** 2)
+        distance_euclidienne.append(dist)
+    return distance_euclidienne
+
+def dist_Manhattan(X, Y):
+    """
+    Distance de Manhattan (L1) entre deux points
+    """
+    distance_Manhattan = []
+    for i in range(len(X)-1):
+        dist = abs(X[i] - Y[i]) + abs(X[i+1] - Y[i+1])
+        distance_Manhattan.append(dist)
+    return distance_Manhattan
+
+
+def dist_chebyshev(X, Y):
+    """
+    Distance Chebyshev entre deux points
+    """
+    distance_chebyshev = []
+    for i in range (len(X)-1):
+        dist = max(abs(X[i] - Y[i]), abs(X[i+1] - Y[i+1]))
+        distance_chebyshev.append(dist)
+    return distance_chebyshev
+
+
+points = [(1, 1), (1, 2), (1, 5), (3, 4), (4, 3), (6, 2), (0, 4)]
+def dist_min(points,distance_func=dist):
+    """
+    Paire de points la plus proche dans la liste (X,Y)
+    En gros on connait les 2 points les plus proches
+    """
+    min_distance = inf
+    pair = (None, None)
+    n = len(points)
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = distance_func(points[i],points[j])
+            if d < min_distance:
+                min_d = d
+                pair = (points[i],points[j])
+    return pair, min_d
+
+
+def cluster_hierarchique(points, method='single'):
+    """
+   Classification Ascendante Hiérarchique (CAH) sur la liste de points."""
+    data = np.array(points)
+    Z = linkage(data, method=method, metric='euclidienn')
+    return Z
+
+
+def dendrogramme_dessin(Z, labels=None, title='Dendrogramme'):
+    """
+    Trace un dendrogramme à partir de la matrice
+"""
+    plt.figure(figsize=(8, 5))
+    dendrogram(Z, labels=labels)
+    plt.title(title)
+    plt.xlabel('Points')
+    plt.ylabel('Distance')
+    plt.tight_layout()
+    plt.show()
+
+
