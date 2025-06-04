@@ -55,10 +55,11 @@ if __name__ == '__main__':
     print("\nRésultats CAH:")
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
-    print(cluster_hierarchique(points, method='ward'))
+    print(cluster_hierarchique(points, method='ward',k=args.k))
     print(clustering(points))
     if len(set(clusters_cah)) > 1:
-        print("Silhouette Score:", silhouette_score(np.array(points), clusters_cah))
+        print("Silhouette Score:", round(silhouette_score(np.array(points), clusters_cah), 3))
+        print(clusters_cah)
     else:
         print("Silhouette Score non calculable (un seul cluster)")
 

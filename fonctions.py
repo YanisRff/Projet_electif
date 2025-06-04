@@ -363,33 +363,3 @@ def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
     return results
 
 
-def silhouette_score_custom(points, labels):
-    """
-    Calcule l'indice de silhouette pour chaque point et retourne le score moyen.
-    Version simplifiée pour comprendre le principe.
-    """
-    n = len(points)
-    s = np.zeros(n)
-
-    for i in range(n):
-        # Points du même cluster
-        cluster_points = [points[j] for j in range(n) if labels[j] == labels[i] and j != i]
-        if not cluster_points:
-            s[i] = 0
-            continue
-
-        # Distance moyenne intra-cluster (a_i)
-        a_i = np.mean([dist_euclidienne(points[i], p) for p in cluster_points])
-
-        # Distance moyenne au cluster le plus proche (b_i)
-        other_clusters = set(labels) - {labels[i]}
-        b_i = inf
-        for cluster in other_clusters:
-            cluster_points = [points[j] for j in range(n) if labels[j] == cluster]
-            mean_dist = np.mean([dist_euclidienne(points[i], p) for p in cluster_points])
-            if mean_dist < b_i:
-                b_i = mean_dist
-
-        s[i] = (b_i - a_i) / max(a_i, b_i) if max(a_i, b_i) > 0 else 0
-
-    return np.mean(s)
