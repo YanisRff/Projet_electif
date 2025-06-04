@@ -196,10 +196,9 @@ def repaire(full_points):
     if len(full_points[0]) > 2:
         pca = PCA(n_components=2)
         points = pca.fit_transform(full_points)
+        points = points.tolist()
     else:
         points = full_points
-
-    points = points.tolist()
 
     X = [p[0] for p in points]
     Y = [p[1] for p in points]
