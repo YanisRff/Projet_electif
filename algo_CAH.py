@@ -55,7 +55,7 @@ if __name__ == '__main__':
     print(cluster_hierarchique(points, method='ward'))
 
 
-    repaire(points)
+    repaire(points,2)
 
     if args.data == "final":
         results = kmeans_clustering(points, labels)
