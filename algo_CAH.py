@@ -3,9 +3,8 @@ import csv
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Mon programme avec options")
-    parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test",
-                        help="Data à utiliser pour l'exécution du programme")
-
+    parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test", help="Data à utiliser pour l'exécution du programme")
+    parser.add_argument("--k", type=int, nargs="?", default=1, help="Identifiant de la data à utiliser (ex : 1, 2...)")
     args = parser.parse_args()
 
     if args.data == "test":
@@ -37,7 +36,6 @@ if __name__ == '__main__':
     print("labels =", labels)
     print("points =", points)
 
-
     #(X_min, Y_min), d_min = dist_min(points, dist_euclidienne)
     #print(f"Paire la plus proche : {X_min} – {Y_min}  (distance = {d_min:.2f})")
 
@@ -55,10 +53,10 @@ if __name__ == '__main__':
     print(cluster_hierarchique(points, method='ward'))
 
 
-    repaire(points,2)
+    repaire(points,args.k)
 
     if args.data == "final":
-        results = kmeans_clustering(points, labels)
+        results = kmeans_clustering(points, labels,k=args.k)
         for label, cluster in results:
             print(f"{label} → Cluster {cluster}")
 
