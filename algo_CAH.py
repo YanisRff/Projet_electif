@@ -5,6 +5,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Mon programme avec options")
     parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test", help="Data à utiliser pour l'exécution du programme")
     parser.add_argument("--k", type=int, nargs="?", default=1, help="Identifiant de la data à utiliser (ex : 1, 2...)")
+    parser.add_argument("--reddim", choices=["PCA", "TSNE", "compare"],nargs="?", default="PCA", help="Fonction de réduction de dimension à utiliser")
     args = parser.parse_args()
 
     if args.data == "test":
@@ -52,11 +53,22 @@ if __name__ == '__main__':
 
     print(cluster_hierarchique(points, method='ward'))
 
-
-    repaire(points,args.k)
+    if args.reddim == "PCA":
+        repaire(points, args.k, "PCA")
+    elif args.reddim == "TSNE":
+        repaire(points, args.k, "TSNE")
+    elif args.reddim == "compare":
+        repaire(points, args.k, "PCA")
+        repaire(points, args.k, "TSNE")
 
     if args.data == "final":
-        results = kmeans_clustering(points, labels,k=args.k)
+        if args.reddim == "PCA":
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+        elif args.reddim == "TSNE":
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+        elif args.reddim == "compare":
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
         for label, cluster in results:
             print(f"{label} → Cluster {cluster}")
 
