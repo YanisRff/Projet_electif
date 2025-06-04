@@ -3,8 +3,9 @@ from math import sqrt,inf
 from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
-
-from scipy.cluster.hierarchy import linkage, dendrogram,fcluster
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 
 
 def mean(arr):
@@ -196,21 +197,20 @@ def dist_min(points,distance_func):
     return pair, min_distance
 
 
+def repaire(full_points,n_clusters=1):
+    if len(full_points[0]) > 2:
+        pca = PCA(n_components=2)
+        points = pca.fit_transform(full_points)
+        points = points.tolist()
+    else:
+        points = full_points
 
-def repaire(points):
-    X=[]
-    Y=[]
-
-
-    for i in range(len(points)):
-        X.append(points[i][0])
-        Y.append(points[i][1])
+    X = [p[0] for p in points]
+    Y = [p[1] for p in points]
 
     plt.scatter(X,Y,color='black')
 
-
-    while len(points)>1:
-
+    while len(points)>1+n_clusters-1:
         (p1,p2),distance = dist_min(points,dist_euclidienne)
         new_point = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2]
         plt.pause(0.5)
@@ -243,6 +243,50 @@ def seuil_max_gap(Z):
     seuil = (distances[index_max_gap] + distances[index_max_gap + 1]) / 2
     return seuil
 
+def clustering(points):
+    n = len(points)
+    distance_min = inf
+    i_min, j_min = -1, -1
+
+    # Étape 1 : trouver la paire la plus proche
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = dist_euclidienne(points[i], points[j])
+            if d < distance_min:
+                distance_min = d
+                i_min, j_min = i, j
+
+    print(f"Fusion des clusters {i_min} et {j_min}, distance = {distance_min:.2f}")
+
+    # Étape 2 : barycentre
+    new_point = (
+        (np.array(points[i_min]) + np.array(points[j_min])) / 2
+    ).tolist()
+
+    # Étape 3 : mettre à jour la liste de points
+    new_points = []
+    for k in range(n):
+        if k not in (i_min, j_min):
+            new_points.append(points[k])
+    new_points.append(new_point)
+
+    new_n = len(new_points)
+    # Création d'une matrice de zéros
+    matrice = []
+    for i in range(new_n):
+        ligne = []
+        for j in range(new_n):
+            ligne.append(0)
+        matrice.append(ligne)
+    # Remplissage avec les distances
+    for i in range(new_n):
+        for j in range(new_n):
+            if i != j:
+                matrice[i][j] = dist_euclidienne(new_points[i], new_points[j])
+
+    return new_points, matrice
+
+
 def cluster_hierarchique(points, method='single', seuil=None):
     """
     Classification Ascendante Hiérarchique (CAH) avec seuil automatique si non fourni.
@@ -263,3 +307,37 @@ def cluster_hierarchique(points, method='single', seuil=None):
     clusters = fcluster(Z, t=seuil, criterion='distance')
     return Z, clusters, seuil
 
+def kmeans_clustering(points, labels, k=3, show_plot=True):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(points)
+    cluster_labels = kmeans.labels_
+
+    results = list(zip(labels, cluster_labels))
+
+    if show_plot:
+        pca = PCA(n_components=2)
+        points_2D = pca.fit_transform(points)
+        centers_2D = pca.transform(kmeans.cluster_centers_)
+
+        plt.figure(figsize=(8, 6))
+
+        for i in range(k):
+            cluster_points = [pt for pt, c in zip(points_2D, cluster_labels) if c == i]
+            xs = [pt[0] for pt in cluster_points]
+            ys = [pt[1] for pt in cluster_points]
+            plt.scatter(xs, ys, label=f'Cluster {i}', s=50)
+
+        plt.scatter(centers_2D[:, 0], centers_2D[:, 1], c='black', marker='X', s=200, label='Centres')
+
+        for (x, y), name in zip(points_2D, labels):
+            plt.text(x, y, name, fontsize=8)
+
+        plt.title("K-Means clustering (projection PCA)")
+        plt.xlabel("PCA 1")
+        plt.ylabel("PCA 2")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    return results
