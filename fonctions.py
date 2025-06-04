@@ -425,6 +425,7 @@ def dbscan_clustering(points, labels, eps=1.5, min_samples=3, show_plot=True, re
 
     return results
 
+
 def silhouette_score_custom(points, labels):
     """
     Calcule l'indice de silhouette pour chaque point et retourne le score moyen.
@@ -455,3 +456,4 @@ def silhouette_score_custom(points, labels):
         s[i] = (b_i - a_i) / max(a_i, b_i) if max(a_i, b_i) > 0 else 0
 
     return np.mean(s)
+
