@@ -7,7 +7,9 @@ from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-
+import seaborn as sns
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
 
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -236,14 +238,17 @@ def repaire(full_points,n_clusters=1, red_dim="PCA"):
     print(full_points)
     plt.show()
 
-def seuil_max_gap(Z):
+
+def seuil_max_gap(Z,k=1):
     """
     calcule le seuil pour le dendrogramme, affiche une ligne en pointillé
     """
     distances = Z[:, 2]
-    gaps = np.diff(distances)
-    index_max_gap = np.argmax(gaps)
-    seuil = (distances[index_max_gap] + distances[index_max_gap + 1]) / 2
+    sorted_distances = np.sort(distances)[::-1]
+
+    if k <= 1 or k > len(Z) + 1:
+        return None
+    seuil = (sorted_distances[k - 2] + sorted_distances[k - 1]) / 2
     return seuil
 def remplissage_matrice(ensemble_points):
     matrice=[]
@@ -296,24 +301,26 @@ def clustering(points):
 
 
 
-def cluster_hierarchique(points, method='single', seuil=None):
+def cluster_hierarchique(points, method='single', k=1):
     """
     Classification Ascendante Hiérarchique (CAH) avec seuil automatique si non fourni.
     """
     data = np.array(points)
     Z = linkage(data, method=method, metric='euclidean')
 
-    if seuil is None:
-        seuil = seuil_max_gap(Z)
+    seuil = seuil_max_gap(Z, k)
 
     dendrogram(Z)
-    plt.axhline(y=seuil, color='black', linestyle='--')
+    if seuil != None:
+        plt.axhline(y=seuil, color='black', linestyle='--')
     plt.title('Dendrogramme CAH (seuil auto)' if seuil else 'Dendrogramme CAH')
     plt.xlabel('Points')
     plt.ylabel('Distance')
     plt.show()
-
-    clusters = fcluster(Z, t=seuil, criterion='distance')
+    if seuil != None:
+        clusters = fcluster(Z, t=seuil, criterion='distance')
+    else:
+        clusters = None
     return Z, clusters, seuil
 
 def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
@@ -360,6 +367,62 @@ def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
 
     return results
 
+def heatmap(dist_matrix):
+    sns.heatmap(dist_matrix, cmap='viridis')
+    plt.title("Matrice des distances entre points 9D")
+    plt.show()
+
+    
+def dbscan_clustering(points, labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA"):
+    points = np.array(points)
+    
+    # Standardisation (important pour DBSCAN)
+    scaler = StandardScaler()
+    points_scaled = scaler.fit_transform(points)
+
+    # Application de DBSCAN
+    db = DBSCAN(eps=eps, min_samples=min_samples)
+    cluster_labels = db.fit_predict(points_scaled)
+
+    results = list(zip(labels, cluster_labels))
+
+    if show_plot:
+        # Réduction de dimension selon l'argument red_dim
+        if red_dim.upper() == "TSNE":
+            perplexity = min(30, max(5, len(points) // 3))
+            reducer = TSNE(n_components=2, random_state=42, perplexity=perplexity)
+            points_2D = reducer.fit_transform(points_scaled)
+        else:  # par défaut ou si "PCA"
+            reducer = PCA(n_components=2)
+            points_2D = reducer.fit_transform(points_scaled)
+
+        # Tracer les clusters
+        plt.figure(figsize=(8, 6))
+        unique_labels = sorted(set(cluster_labels))
+        colors = plt.cm.get_cmap('tab10', len(unique_labels))
+
+        for idx, label in enumerate(unique_labels):
+            cluster_points = [pt for pt, c in zip(points_2D, cluster_labels) if c == label]
+            xs = [pt[0] for pt in cluster_points]
+            ys = [pt[1] for pt in cluster_points]
+            if label == -1:
+                plt.scatter(xs, ys, label='Bruit', c='grey', marker='x', s=50)
+            else:
+                plt.scatter(xs, ys, label=f'Cluster {label}', color=colors(idx), s=50)
+
+        for (x, y), name in zip(points_2D, labels):
+            plt.text(x, y, name, fontsize=8)
+
+        plt.title(f"DBSCAN clustering (projection {red_dim.upper()})")
+        plt.xlabel(f"{red_dim.upper()} 1")
+        plt.ylabel(f"{red_dim.upper()} 2")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    return results
+
 
 def silhouette_score_custom(points, labels):
     """
@@ -391,3 +454,4 @@ def silhouette_score_custom(points, labels):
         s[i] = (b_i - a_i) / max(a_i, b_i) if max(a_i, b_i) > 0 else 0
 
     return np.mean(s)
+

@@ -1,6 +1,7 @@
 from fonctions import *
 import csv
 import argparse
+from sklearn.metrics import silhouette_score
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Mon programme avec options")
     parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test", help="Data à utiliser pour l'exécution du programme")
@@ -49,20 +50,21 @@ if __name__ == '__main__':
     print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
 
 
-
-    Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward')
+    Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
     print("\nRésultats CAH:")
     print("Z : ",Z)
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
-    print(cluster_hierarchique(points, method='ward'))
+    print(cluster_hierarchique(points, method='ward',k=args.k))
     print(clustering(points))
+    
+    #heatmap(remplissage matrice)
 
     if len(set(clusters_cah)) > 1:
-        silhouette_cah = silhouette_score_custom(np.array(points), clusters_cah)
-        print(f"Silhouette Score (CAH): {silhouette_cah:.3f}")
+        print("Silhouette Score:", round(silhouette_score(np.array(points), clusters_cah), 3))
+        print(clusters_cah)
     else:
-        print("Silhouette Score (CAH): non calculable (un seul cluster)")
+        print("Silhouette Score non calculable (un seul cluster)")
 
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
@@ -70,15 +72,42 @@ if __name__ == '__main__':
         repaire(points, args.k, "TSNE")
     elif args.reddim == "compare":
         repaire(points, args.k, "PCA")
-        repaire(points, args.k, "TSNE")
+        if args.data == "final":
+            repaire(points, args.k, "TSNE")
+
 
     if args.data == "final":
         if args.reddim == "PCA":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
         elif args.reddim == "TSNE":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
             results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
         for label, cluster in results:
             print(f"{label} → Cluster {cluster}")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
+
