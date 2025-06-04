@@ -30,8 +30,8 @@ if __name__ == '__main__':
                 label = row[0]  # Individu XX
                 coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
 
-                labels.append(label)
-                points.append(tuple(coords))  # 9 dimensions
+            labels.append(label)
+            points.append(tuple(coords))  # 9 dimensions
 
     # Exemple d'affichage
     print("labels =", labels)
@@ -55,6 +55,7 @@ if __name__ == '__main__':
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
     print(cluster_hierarchique(points, method='ward'))
+    print(clustering(points))
 
     if len(set(clusters_cah)) > 1:
         silhouette_cah = silhouette_score_custom(np.array(points), clusters_cah)

@@ -146,39 +146,44 @@ def statistique_t(b1,std_error):
 
 """--------------------PARTIE 5------------------"""
 
-def dist_euclidienne(point1, point2):
+def dist_euclidienne(p1, p2):
     """
     Distance euclidienne entre deux points
     """
+
+    dist = sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+    return dist
     dist = 0
     for i in range (len(point1)):
         dist += (point2[i] - point1[i]) ** 2
     return sqrt(dist)
 
-def dist_manhattan(point1, point2):
+
+def dist_manhattan(p1, p2):
     """
     Distance de Manhattan (L1) entre deux points
     """
+    dist = abs(p2[0] - p1[0]) + abs(p2[1] - p1[1])
+
     dist = 0
     for i in range (len(point1)):
         dist += abs(point2[i] - point1[i])
     return dist
 
 
-def dist_chebyshev(point1, point2):
+def dist_chebyshev(p1, p2):
     """
     Distance Chebyshev entre deux points
     """
-    for i in range (len(point1)):
-        distance[i] = abs(point1[i] - point2[i])
-    dist = max(distance)
+    dist = max(abs(p1[0] - p2[0]), abs(p1[1]- p2[1]))
+
     return dist
 
 
 def dist_min(points,distance_func):
     """
     Paire de points la plus proche dans la liste (X,Y)
-    En gros on connait les 2 points les plus proches
+    Retourne les deux points les plus proches
     """
     min_distance = inf
     pair = (None, None)
@@ -194,6 +199,10 @@ def dist_min(points,distance_func):
 
 
 def repaire(full_points,n_clusters=1, red_dim="PCA"):
+    """
+    Utilise les différentes méthodes de clustering afin de réaliser un repaire étape par étape de l'avancé des différents
+    algorithmes
+    """
     if len(full_points[0]) > 2:
         if red_dim =="PCA":
             pca = PCA(n_components=2)
@@ -224,11 +233,13 @@ def repaire(full_points,n_clusters=1, red_dim="PCA"):
             points.remove(p1)
         if(p2):
             points.remove(p2)
-
+    print(full_points)
     plt.show()
 
-
 def seuil_max_gap(Z):
+    """
+    calcule le seuil pour le dendrogramme, affiche une ligne en pointillé
+    """
     distances = Z[:, 2]
     gaps = np.diff(distances)
     index_max_gap = np.argmax(gaps)
@@ -236,10 +247,17 @@ def seuil_max_gap(Z):
     return seuil
 
 def clustering(points):
-    n = len(points)
-    distance_min = inf
+    """
+    Effectue la méthode de clustering de classification ascendante hiérarchique
+    calcule la distance la plus faible entre deux points pour les fusionner
+    réecris la matrice avec les points fusionnés puis re calcule les distance
+    """
+    #n = len(points)
+    #distance_min = inf
     i_min, j_min = -1, -1
     while len(points) > 1 :
+        distance_min = inf
+        n = len(points)
         # Étape 1 : trouver la paire la plus proche
         for i in range(n):
             for j in range(i + 1, n):
