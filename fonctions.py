@@ -224,7 +224,7 @@ def repaire(full_points,n_clusters=1):
             points.remove(p1)
         if(p2):
             points.remove(p2)
-
+    print(full_points)
     plt.show()
 
 def seuil_max_gap(Z):
@@ -243,10 +243,12 @@ def clustering(points):
     calcule la distance la plus faible entre deux points pour les fusionner
     réecris la matrice avec les points fusionnés puis re calcule les distance
     """
-    n = len(points)
-    distance_min = inf
+    #n = len(points)
+    #distance_min = inf
     i_min, j_min = -1, -1
     while len(points) > 1 :
+        distance_min = inf
+        n = len(points)
         # Étape 1 : trouver la paire la plus proche
         for i in range(n):
             for j in range(i + 1, n):
