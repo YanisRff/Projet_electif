@@ -82,4 +82,3 @@ if __name__ == '__main__':
             results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
         for label, cluster in results:
             print(f"{label} → Cluster {cluster}")
-
