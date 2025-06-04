@@ -4,6 +4,10 @@ from scipy.stats import ttest_ind,ttest_1samp,t
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
+
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
     sum=0
@@ -188,14 +192,17 @@ def dist_min(points,distance_func):
     return pair, min_distance
 
 
-def repaire(points):
-    X=[]
-    Y=[]
+def repaire(full_points):
+    if len(full_points[0]) > 2:
+        pca = PCA(n_components=2)
+        points = pca.fit_transform(full_points)
+    else:
+        points = full_points
 
+    points = points.tolist()
 
-    for i in range(len(points)):
-        X.append(points[i][0])
-        Y.append(points[i][1])
+    X = [p[0] for p in points]
+    Y = [p[1] for p in points]
 
     plt.scatter(X,Y,color='black')
 
@@ -240,3 +247,37 @@ def cluster_hierarchique(points, method='single', seuil=None):
     clusters = fcluster(Z, t=seuil, criterion='distance')
     return Z, clusters, seuil
 
+def kmeans_clustering(points, labels, k=3, show_plot=True):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(points)
+    cluster_labels = kmeans.labels_
+
+    results = list(zip(labels, cluster_labels))
+
+    if show_plot:
+        pca = PCA(n_components=2)
+        points_2D = pca.fit_transform(points)
+        centers_2D = pca.transform(kmeans.cluster_centers_)
+
+        plt.figure(figsize=(8, 6))
+
+        for i in range(k):
+            cluster_points = [pt for pt, c in zip(points_2D, cluster_labels) if c == i]
+            xs = [pt[0] for pt in cluster_points]
+            ys = [pt[1] for pt in cluster_points]
+            plt.scatter(xs, ys, label=f'Cluster {i}', s=50)
+
+        plt.scatter(centers_2D[:, 0], centers_2D[:, 1], c='black', marker='X', s=200, label='Centres')
+
+        for (x, y), name in zip(points_2D, labels):
+            plt.text(x, y, name, fontsize=8)
+
+        plt.title("K-Means clustering (projection PCA)")
+        plt.xlabel("PCA 1")
+        plt.ylabel("PCA 2")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    return results
