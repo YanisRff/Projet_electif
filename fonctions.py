@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 
 def mean(arr):
@@ -197,15 +198,23 @@ def dist_min(points,distance_func):
     return pair, min_distance
 
 
-def repaire(full_points,n_clusters=1):
+def repaire(full_points,n_clusters=1, red_dim="PCA"):
     """
     Utilise les différentes méthodes de clustering afin de réaliser un repaire étape par étape de l'avancé des différents
     algorithmes
     """
     if len(full_points[0]) > 2:
-        pca = PCA(n_components=2)
-        points = pca.fit_transform(full_points)
-        points = points.tolist()
+        if red_dim =="PCA":
+            pca = PCA(n_components=2)
+            points = pca.fit_transform(full_points)
+            points = points.tolist()
+        elif red_dim == "TSNE":
+            full_points_np = np.array(full_points)
+            n_samples = full_points_np.shape[0]
+            perplexity = min(30, n_samples - 1)
+            tsne = TSNE(n_components=2, perplexity=perplexity)
+            points = tsne.fit_transform(full_points_np)
+            points = points.tolist()
     else:
         points = full_points
 
@@ -309,7 +318,8 @@ def cluster_hierarchique(points, method='single', seuil=None):
     clusters = fcluster(Z, t=seuil, criterion='distance')
     return Z, clusters, seuil
 
-def kmeans_clustering(points, labels, k=3, show_plot=True):
+def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
+    points = np.array(points)
     kmeans = KMeans(n_clusters=k, random_state=42)
     kmeans.fit(points)
     cluster_labels = kmeans.labels_
@@ -317,9 +327,16 @@ def kmeans_clustering(points, labels, k=3, show_plot=True):
     results = list(zip(labels, cluster_labels))
 
     if show_plot:
-        pca = PCA(n_components=2)
-        points_2D = pca.fit_transform(points)
-        centers_2D = pca.transform(kmeans.cluster_centers_)
+        # Réduction de dimension selon l'argument red_dim
+        if red_dim.upper() == "TSNE":
+            perplexity = min(30, max(5, len(points) // 3))
+            reducer = TSNE(n_components=2, random_state=42, perplexity=perplexity)
+            points_2D = reducer.fit_transform(points)
+            centers_2D = None  # t-SNE ne permet pas de transformer de nouveaux points comme les centres
+        else:  # par défaut ou si "PCA"
+            reducer = PCA(n_components=2)
+            points_2D = reducer.fit_transform(points)
+            centers_2D = reducer.transform(kmeans.cluster_centers_)
 
         plt.figure(figsize=(8, 6))
 
@@ -329,14 +346,15 @@ def kmeans_clustering(points, labels, k=3, show_plot=True):
             ys = [pt[1] for pt in cluster_points]
             plt.scatter(xs, ys, label=f'Cluster {i}', s=50)
 
-        plt.scatter(centers_2D[:, 0], centers_2D[:, 1], c='black', marker='X', s=200, label='Centres')
+        if centers_2D is not None:
+            plt.scatter(centers_2D[:, 0], centers_2D[:, 1], c='black', marker='X', s=200, label='Centres')
 
         for (x, y), name in zip(points_2D, labels):
             plt.text(x, y, name, fontsize=8)
 
-        plt.title("K-Means clustering (projection PCA)")
-        plt.xlabel("PCA 1")
-        plt.ylabel("PCA 2")
+        plt.title(f"K-Means clustering (projection {red_dim.upper()})")
+        plt.xlabel(f"{red_dim.upper()} 1")
+        plt.ylabel(f"{red_dim.upper()} 2")
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
