@@ -182,7 +182,7 @@ def dist_chebyshev(p1, p2):
 def dist_min(points,distance_func):
     """
     Paire de points la plus proche dans la liste (X,Y)
-    En gros on connait les 2 points les plus proches
+    Retourne les deux points les plus proches
     """
     min_distance = inf
     pair = (None, None)
@@ -198,6 +198,10 @@ def dist_min(points,distance_func):
 
 
 def repaire(full_points,n_clusters=1):
+    """
+    Utilise les différentes méthodes de clustering afin de réaliser un repaire étape par étape de l'avancé des différents
+    algorithmes
+    """
     if len(full_points[0]) > 2:
         pca = PCA(n_components=2)
         points = pca.fit_transform(full_points)
@@ -223,20 +227,10 @@ def repaire(full_points,n_clusters=1):
 
     plt.show()
 
-def proche_voisin(centre,points):
-    min_distance = inf
-    pair = (None, None)
-    n = len(points)
-    for i in range(n):
-        d = dist_euclidienne(centre, points[i])
-        if d < min_distance:
-            min_distance = d
-            pair = (points[i][0],points[i][1])
-
-    return pair
-
-
 def seuil_max_gap(Z):
+    """
+    calcule le seuil pour le dendrogramme, affiche une ligne en pointillé
+    """
     distances = Z[:, 2]
     gaps = np.diff(distances)
     index_max_gap = np.argmax(gaps)
@@ -244,6 +238,11 @@ def seuil_max_gap(Z):
     return seuil
 
 def clustering(points):
+    """
+    Effectue la méthode de clustering de classification ascendante hiérarchique
+    calcule la distance la plus faible entre deux points pour les fusionner
+    réecris la matrice avec les points fusionnés puis re calcule les distance
+    """
     n = len(points)
     distance_min = inf
     i_min, j_min = -1, -1

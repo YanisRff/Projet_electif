@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
             labels.append(label)
             points.append(tuple(coords))  # 9 dimensions
-    """
+
     # Exemple d'affichage
     print("labels =", labels)
     print("points =", points)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
 
     print(cluster_hierarchique(points, method='ward'))
-
+    print(clustering(points))
 
     repaire(points,args.k)
 
