@@ -30,8 +30,8 @@ if __name__ == '__main__':
                 label = row[0]  # Individu XX
                 coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
 
-                labels.append(label)
-                points.append(tuple(coords))  # 9 dimensions
+            labels.append(label)
+            points.append(tuple(coords))  # 9 dimensions
 
     # Exemple d'affichage
     print("labels =", labels)
@@ -49,13 +49,20 @@ if __name__ == '__main__':
     print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
 
 
+    Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
+    print("\nRésultats CAH:")
+    print("Seuil utilisé:", seuil)
+    print("Clusters:", clusters_cah)
+    print(cluster_hierarchique(points, method='ward'))
+    print(clustering(points))
+    
+    #heatmap(remplissage matrice)
 
-
-    result = cluster_hierarchique(points, method='ward',k=args.k)
-
-    print(result)
-
-    heatmap(result[0])
+    if len(set(clusters_cah)) > 1:
+        silhouette_cah = silhouette_score_custom(np.array(points), clusters_cah)
+        print(f"Silhouette Score (CAH): {silhouette_cah:.3f}")
+    else:
+        print("Silhouette Score (CAH): non calculable (un seul cluster)")
 
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
