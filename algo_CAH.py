@@ -51,7 +51,11 @@ if __name__ == '__main__':
 
 
 
-    print(cluster_hierarchique(points, method='ward'))
+    result = cluster_hierarchique(points, method='ward',k=args.k)
+
+    print(result)
+
+    heatmap(result[0])
 
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
@@ -59,16 +63,36 @@ if __name__ == '__main__':
         repaire(points, args.k, "TSNE")
     elif args.reddim == "compare":
         repaire(points, args.k, "PCA")
-        repaire(points, args.k, "TSNE")
+        if args.data == "final":
+            repaire(points, args.k, "TSNE")
 
     if args.data == "final":
         if args.reddim == "PCA":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
         elif args.reddim == "TSNE":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
-        for label, cluster in results:
-            print(f"{label} → Cluster {cluster}")
-
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            print("\nClusters with kmeans_clustering\n")
+            for label, cluster in results_kmeans:
+                print(f"{label} → Cluster {cluster}")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
+            results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
+            print("\nClusters with DBSCAN\n")
+            for label, cluster in results_dbscan:
+                print(f"{label} → Cluster {cluster}")
