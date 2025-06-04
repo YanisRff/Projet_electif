@@ -50,8 +50,17 @@ if __name__ == '__main__':
 
 
 
-
+    Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward')
+    print("\nRésultats CAH:")
+    print("Seuil utilisé:", seuil)
+    print("Clusters:", clusters_cah)
     print(cluster_hierarchique(points, method='ward'))
+
+    if len(set(clusters_cah)) > 1:
+        silhouette_cah = silhouette_score_custom(np.array(points), clusters_cah)
+        print(f"Silhouette Score (CAH): {silhouette_cah:.3f}")
+    else:
+        print("Silhouette Score (CAH): non calculable (un seul cluster)")
 
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
