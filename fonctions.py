@@ -192,7 +192,7 @@ def dist_min(points,distance_func):
     return pair, min_distance
 
 
-def repaire(full_points,n_clusters=0):
+def repaire(full_points,n_clusters=1):
     if len(full_points[0]) > 2:
         pca = PCA(n_components=2)
         points = pca.fit_transform(full_points)
@@ -205,7 +205,7 @@ def repaire(full_points,n_clusters=0):
 
     plt.scatter(X,Y,color='black')
 
-    while len(points)>1+n_clusters:
+    while len(points)>1+n_clusters-1:
         (p1,p2),distance = dist_min(points,dist_euclidienne)
         new_point = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2]
         plt.pause(0.5)
