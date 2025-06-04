@@ -52,6 +52,7 @@ if __name__ == '__main__':
 
     Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward')
     print("\nRésultats CAH:")
+    print("Z : ",Z)
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
     print(cluster_hierarchique(points, method='ward'))

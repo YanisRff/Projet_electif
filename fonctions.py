@@ -245,6 +245,15 @@ def seuil_max_gap(Z):
     index_max_gap = np.argmax(gaps)
     seuil = (distances[index_max_gap] + distances[index_max_gap + 1]) / 2
     return seuil
+def remplissage_matrice(ensemble_points):
+    matrice=[]
+    ligne=[]
+    for i in range(len(ensemble_points)):
+        for j in range(len(ensemble_points)):
+            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
+        matrice.append(ligne)
+        ligne=[]
+    return matrice
 
 def clustering(points):
     """
