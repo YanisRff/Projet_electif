@@ -50,13 +50,15 @@ if __name__ == '__main__':
         print(matrice)
 
     heatmap(remplissage_matrice(points))
-    """
-    if len(set(clusters_cah)) > 1:
-        print("Silhouette Score:", round(silhouette_score(np.array(points), clusters_cah), 3))
-        print(clusters_cah)
+    k = max(2, args.k)
+    results_kmeans = kmeans_clustering(points, labels, k=k, red_dim="PCA")
+    kmeans_labels = [cluster for _, cluster in results_kmeans]
+
+    if len(set(kmeans_labels)) > 1:
+        evaluate_clusters(points, kmeans_labels)
     else:
-        print("Silhouette Score non calculable (un seul cluster)")
-    """
+        print("Évaluation impossible : un seul cluster détecté par KMeans.")
+
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
     elif args.reddim == "TSNE":
