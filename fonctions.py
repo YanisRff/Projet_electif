@@ -220,6 +220,7 @@ def repaire(full_points,n_clusters=1, red_dim="PCA"):
             points = points.tolist()
     else:
         points = full_points[:]
+
     X = [p[0] for p in points]
     Y = [p[1] for p in points]
 
@@ -250,6 +251,7 @@ def seuil_max_gap(Z,k=1):
         return None
     seuil = (sorted_distances[k - 2] + sorted_distances[k - 1]) / 2
     return seuil
+
 def remplissage_matrice(ensemble_points):
     matrice=[]
     ligne=[]
@@ -293,6 +295,7 @@ def clustering(points):
             print(row)
 
         count +=1
+        heatmap(matrice)
 
     return matrice,clusters
 

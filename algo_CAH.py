@@ -40,9 +40,13 @@ if __name__ == '__main__':
     print("Z : ",Z)
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
-    print(cluster_hierarchique(points, method='ward',k=args.k))
+    print(Z, clusters_cah, seuil)
+    print(points)
+    cluster1, matrice = clustering(points)
+    print(cluster1)
+    print(matrice)
 
-    #heatmap(remplissage matrice)
+    heatmap(remplissage_matrice(points))
     """
     if len(set(clusters_cah)) > 1:
         print("Silhouette Score:", round(silhouette_score(np.array(points), clusters_cah), 3))
@@ -82,10 +86,6 @@ if __name__ == '__main__':
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
-        for label, cluster in results:
-            print(f"{label} → Cluster {cluster}")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             print("\nClusters with kmeans_clustering\n")
@@ -96,7 +96,4 @@ if __name__ == '__main__':
             print("\nClusters with DBSCAN\n")
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
-    print(points)
-    cluster1, matrice = clustering(points)
-    print(cluster1)
-    print(matrice)
+
