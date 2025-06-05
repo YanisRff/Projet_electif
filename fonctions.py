@@ -264,6 +264,9 @@ def clustering(points, show_plot = True,k=1, clean = True):
     matrice = remplissage_matrice(pt)
     count=1
     dim = len(points[0])
+    n = len(points)
+    cluster_ids = list(range(n))  # Chaque point initial a son propre identifiant
+    pt_indices = list(range(n))
 
     while len(matrice)>k:
 
@@ -279,13 +282,23 @@ def clustering(points, show_plot = True,k=1, clean = True):
 
 
         clusters.append({pt[indice_x], pt[indice_y],min_dist})
-        
+
+        id_x = cluster_ids[pt_indices[indice_x]]
+        id_y = cluster_ids[pt_indices[indice_y]]
+        new_id = min(id_x, id_y)
+        old_id = max(id_x, id_y)
+        for i in range(n):
+            if cluster_ids[i] == old_id:
+                cluster_ids[i] = new_id
+
         centre = ()
         for i in range(len(points[0])):
             centre += (((pt[indice_x][i] + pt[indice_y][i])/2),)
 
         pt[indice_x] = centre
         pt.remove(pt[indice_y])
+
+        pt_indices.pop(indice_y)
 
         matrice = remplissage_matrice(pt)
         if clean == False:
@@ -297,7 +310,7 @@ def clustering(points, show_plot = True,k=1, clean = True):
         if show_plot:
             heatmap(matrice)
 
-    return matrice,clusters
+    return matrice,clusters, cluster_ids
 
 
 

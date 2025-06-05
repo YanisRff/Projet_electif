@@ -44,7 +44,9 @@ if __name__ == '__main__':
         print("Seuil utilisé:", seuil)
         print("Clusters:", clusters_cah)
         print(Z, clusters_cah, seuil)
-    cluster1, matrice = clustering(points, args.hm, args.k,args.clean)
+    cluster1, matrice, indices = clustering(points, args.hm, args.k,args.clean)
+    for i in range(len(indices)):
+        print("point ", i, "correspond au cluster ", indices[i])
     if args.clean == False:
         print(cluster1)
         print(matrice)
