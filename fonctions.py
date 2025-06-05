@@ -337,7 +337,7 @@ def cluster_hierarchique(points, method='single', k=1):
         clusters = None
     return Z, clusters, seuil
 
-def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
+def kmeans_clustering(points, k=3, show_plot=True, red_dim="PCA"):
     points = np.array(points)
     kmeans = KMeans(n_clusters=k, random_state=42)
     kmeans.fit(points)
@@ -346,13 +346,12 @@ def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
     results = list(zip(labels, cluster_labels))
 
     if show_plot:
-        # Réduction de dimension selon l'argument red_dim
         if red_dim.upper() == "TSNE":
             perplexity = min(30, max(5, len(points) // 3))
             reducer = TSNE(n_components=2, random_state=42, perplexity=perplexity)
             points_2D = reducer.fit_transform(points)
-            centers_2D = None  # t-SNE ne permet pas de transformer de nouveaux points comme les centres
-        else:  # par défaut ou si "PCA"
+            centers_2D = None
+        else:
             reducer = PCA(n_components=2)
             points_2D = reducer.fit_transform(points)
             centers_2D = reducer.transform(kmeans.cluster_centers_)
@@ -516,3 +515,29 @@ def evaluate_clusters(X, labels, verbose=True):
         "dunn_index": dunn,
         "clusters": cluster_stats
     }
+
+def stat_desc(points, k,):
+    print("Pour le CAH : ")
+    cluster1, matrice, indices = clustering(points, False, k, True)
+    tab{}
+    for i in indices:
+        if indices[i] not in tab:
+            tab[indices[i]] = []
+        tab[indices[i]].append(points[i])
+    for i in range(len(tab)):
+        prin("Cluster ", i, " :")
+        print("Moyenne : ", mean(tab[i]))
+        print("Mediane : ", mediane(tab[i]))
+        print("Écart-type : ", ecart_type(variance(tab[i])))
+        print("\n")
+    print("\n")
+    print("Pour le K-Means : ")
+    kmeans = kmeans_clustering(points, k, False)
+    tabK{}
+    
+
+
+
+
+
+}
