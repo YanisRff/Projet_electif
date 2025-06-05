@@ -521,6 +521,7 @@ def stat_desc(points, labels, k):
     def transpose(matrix):
         return list(map(list, zip(*matrix)))
 
+    print("\n")
     print("Pour le CAH : ")
     cluster1, matrice, indices = clustering(points, False, k, True)
     tab = {}
@@ -536,8 +537,8 @@ def stat_desc(points, labels, k):
             print("Moyenne : ", mean(dim))
             print("Médiane : ", mediane(dim))
             print("Écart-type : ", ecart_type(variance(dim)))
-            print()
-        print()
+            print("\n")
+        print("\n")
 
     print("Pour le K-Means : ")
     results_kmeans = kmeans_clustering(points, labels, k, show_plot=False)
@@ -551,8 +552,8 @@ def stat_desc(points, labels, k):
             print("Moyenne : ", mean(dim))
             print("Médiane : ", mediane(dim))
             print("Écart-type : ", ecart_type(variance(dim)))
-            print()
-        print()
+            print("\n")
+        print("\n")
 
     print("Pour le DBSCAN : ")
     results_dbscan = dbscan_clustering(points, labels, show_plot=False)
@@ -567,6 +568,6 @@ def stat_desc(points, labels, k):
             print("Moyenne : ", mean(dim))
             print("Médiane : ", mediane(dim))
             print("Écart-type : ", ecart_type(variance(dim)))
-            print()
-        print()
+            print("\n")
+        print("\n")
 
