@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     heatmap(remplissage_matrice(points))
     k = max(2, args.k)
-    results_kmeans = kmeans_clustering(points, labels, k=k, red_dim="PCA")
+    results_kmeans = kmeans_clustering(points, labels, k=k, show_plot=False, red_dim="PCA")
     kmeans_labels = [cluster for _, cluster in results_kmeans]
 
     if len(set(kmeans_labels)) > 1:
