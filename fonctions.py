@@ -10,6 +10,7 @@ from sklearn.manifold import TSNE
 import seaborn as sns
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_samples, silhouette_score
 
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -373,10 +374,10 @@ def heatmap(dist_matrix):
     plt.title("Matrice des distances entre points 9D")
     plt.show()
 
-    
+
 def dbscan_clustering(points, labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA"):
     points = np.array(points)
-    
+
     # Standardisation (important pour DBSCAN)
     scaler = StandardScaler()
     points_scaled = scaler.fit_transform(points)
@@ -456,3 +457,42 @@ def silhouette_score_custom(points, labels):
 
     return np.mean(s)
 
+#Zone evalution
+
+def evaluate_clusters(X, labels, verbose=True):
+    """
+    Évalue un clustering via les scores de silhouette.
+    Retourne :
+    - Score moyen global
+    - Moyenne par cluster
+    - Taille de chaque cluster
+    """
+    if len(set(labels)) < 2:
+            print("Impossible de calculer le score de silhouette : au moins deux clusters sont nécessaires.")
+            return
+    silhouette_vals = silhouette_samples(X, labels)
+    silhouette_avg = silhouette_score(X, labels)
+
+    cluster_ids = np.unique(labels)
+    cluster_stats = []
+
+    for cluster in cluster_ids:
+        cluster_sil_vals = silhouette_vals[labels == cluster]
+        mean_score = cluster_sil_vals.mean()
+        size = len(cluster_sil_vals)
+        cluster_stats.append({
+            "cluster": cluster,
+            "mean_silhouette": mean_score,
+            "size": size
+        })
+
+    if verbose:
+        print(f"\nSilhouette moyenne globale : {silhouette_avg:.4f}")
+        print("Silhouette moyenne par cluster :")
+        for stat in cluster_stats:
+            print(f" - Cluster {stat['cluster']}: {stat['mean_silhouette']:.4f} (taille: {stat['size']})")
+
+    return {
+        "silhouette_global": silhouette_avg,
+        "clusters": cluster_stats
+    }
