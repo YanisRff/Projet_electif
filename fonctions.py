@@ -250,55 +250,53 @@ def seuil_max_gap(Z,k=1):
         return None
     seuil = (sorted_distances[k - 2] + sorted_distances[k - 1]) / 2
     return seuil
+def remplissage_matrice(ensemble_points):
+    matrice=[]
+    ligne=[]
+    for i in range(len(ensemble_points)):
+        for j in range(len(ensemble_points)):
+            ligne.append(round(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2,2))
+        matrice.append(ligne)
+        ligne=[]
+    return matrice
 
 def clustering(points):
-    """
-    Effectue la méthode de clustering de classification ascendante hiérarchique
-    calcule la distance la plus faible entre deux points pour les fusionner
-    réecris la matrice avec les points fusionnés puis re calcule les distance
-    """
-    #n = len(points)
-    #distance_min = inf
-    i_min, j_min = -1, -1
-    while len(points) > 1 :
-        distance_min = inf
-        n = len(points)
-        # Étape 1 : trouver la paire la plus proche
-        for i in range(n):
-            for j in range(i + 1, n):
-                d = dist_euclidienne(points[i], points[j])
-                if d < distance_min:
-                    distance_min = d
-                    i_min, j_min = i, j
+    clusters=[]
+    matrice = remplissage_matrice(points)
+    count=1
 
-        print(f"Fusion des clusters {i_min} et {j_min}, distance = {distance_min:.2f}")
+    while len(matrice)>1:
 
-        # Étape 2 : barycentre du cluster entre les deux points
-        new_point = ((np.array(points[i_min]) + np.array(points[j_min])) / 2).tolist()
+        min_dist = inf
+        indice_x = 0
+        indice_y = 0
+        for i in range(len(matrice)):
+            for j in range(len(matrice[i])):
+                if matrice[i][j] < min_dist and matrice[i][j] !=0:
+                    min_dist = matrice[i][j]
+                    indice_x = i
+                    indice_y = j
 
-        # Étape 3 : mettre à jour la liste de points
-        new_points = []
-        for k in range(n):
-            if k not in (i_min, j_min):
-                new_points.append(points[k])
-        new_points.append(new_point)
+        clusters.append({points[indice_x], points[indice_y]})
 
-        # Étape 4 : Création matrice dim n-1
-        points = new_points
-        new_n = len(points)
-        # Création d'une matrice de zéros
-        matrice = []
-        for i in range(new_n):
-            ligne = []
-            for j in range(new_n):
-                ligne.append(0)
-            matrice.append(ligne)
-        # Remplissage avec les distances après clustering
-        for i in range(new_n):
-            for j in range(new_n):
-                if i != j:
-                    matrice[i][j] = round(dist_euclidienne(points[i], points[j]), 2)
-    return points, matrice
+        centre = ((points[indice_x][0] + points[indice_y][0])/2,(points[indice_x][1]+ points[indice_y][1])/2)
+
+        points[indice_x] = centre
+        points.remove(points[indice_y])
+
+        matrice = remplissage_matrice(points)
+
+        print("Matrice des distances à l'étape : ",count)
+        for row in matrice:
+            print(row)
+
+        count +=1
+
+
+
+
+
+    return matrice,clusters
 
 
 

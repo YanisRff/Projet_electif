@@ -38,12 +38,6 @@ if __name__ == '__main__':
     print("labels =", labels)
     print("points =", points)
 
-    #(X_min, Y_min), d_min = dist_min(points, dist_euclidienne)
-    #print(f"Paire la plus proche : {X_min} – {Y_min}  (distance = {d_min:.2f})")
-
-
-    #(X_m1, Y_m1), d_m1 = dist_min(points, dist_euclidienne)
-    #print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
 
     (X_m1, Y_m1), d_m1 = dist_min(points, dist_euclidienne)
 
@@ -52,6 +46,7 @@ if __name__ == '__main__':
 
     Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
     print("\nRésultats CAH:")
+    print("Z : ",Z)
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
     print(cluster_hierarchique(points, method='ward',k=args.k))
@@ -95,6 +90,10 @@ if __name__ == '__main__':
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+        for label, cluster in results:
+            print(f"{label} → Cluster {cluster}")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             print("\nClusters with kmeans_clustering\n")
@@ -105,3 +104,5 @@ if __name__ == '__main__':
             print("\nClusters with DBSCAN\n")
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
+
+    repaire(points)
