@@ -31,17 +31,8 @@ if __name__ == '__main__':
                 label = row[0]  # Individu XX
                 coords = list(map(float, row[1:]))  # Convertir les 9 valeurs en float
 
-            labels.append(label)
-            points.append(tuple(coords))  # 9 dimensions
-
-    # Exemple d'affichage
-    print("labels =", labels)
-    print("points =", points)
-
-
-    (X_m1, Y_m1), d_m1 = dist_min(points, dist_euclidienne)
-
-    print(f"Paire la plus proche (distance Manhattan) : {X_m1} – {Y_m1}  (d = {d_m1:.2f})")
+                labels.append(label)
+                points.append(tuple(coords))  # 9 dimensions
 
 
     Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
@@ -49,17 +40,17 @@ if __name__ == '__main__':
     print("Z : ",Z)
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
-    print(cluster_hierarchique(points, method='ward',k=args.k))
-    print(clustering(points))
-    
-    #heatmap(remplissage matrice)
+    print(Z, clusters_cah, seuil)
+    #print(clustering(points))
 
+    heatmap(remplissage_matrice(points))
+    """
     if len(set(clusters_cah)) > 1:
         print("Silhouette Score:", round(silhouette_score(np.array(points), clusters_cah), 3))
         print(clusters_cah)
     else:
         print("Silhouette Score non calculable (un seul cluster)")
-
+    """
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
     elif args.reddim == "TSNE":
@@ -90,10 +81,6 @@ if __name__ == '__main__':
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
-            results = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
-        for label, cluster in results:
-            print(f"{label} → Cluster {cluster}")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             print("\nClusters with kmeans_clustering\n")
@@ -104,5 +91,3 @@ if __name__ == '__main__':
             print("\nClusters with DBSCAN\n")
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
-
-    repaire(points)
