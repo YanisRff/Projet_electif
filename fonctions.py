@@ -267,7 +267,7 @@ def clustering(points, show_plot = True,k=1, clean = True):
     n = len(points)
     cluster_ids = list(range(n))  # Chaque point initial a son propre identifiant
     pt_indices = list(range(n))
-
+    count_max = len(matrice)
     while len(matrice)>k:
 
         min_dist = inf
@@ -302,9 +302,19 @@ def clustering(points, show_plot = True,k=1, clean = True):
 
         matrice = remplissage_matrice(pt)
         if clean == False:
-            print("Matrice des distances à l'étape : ",count)
-            for row in matrice:
-                print(row)
+            print(f"\n📌 Étape {count - 1} de la CAH")
+            print(f"🔗 Fusion des points aux indices {indice_x} et {indice_y}")
+            print(f"   ↳ Distance : {round(min_dist, 2)}")
+            print(f"   ↳ Nouveau centre : {centre}\n")
+    
+            print("📐 Matrice des distances (carrées) :")
+            header = "       " + "".join([f"{i:^8}" for i in range(len(matrice))])
+            print(header)
+            print("-" * len(header))
+            for i, row in enumerate(matrice):
+                row_str = f"{i:^7}" + "".join([f"{val:^8.2f}" for val in row])
+                print(row_str)
+            print("-" * len(header))
 
         count +=1
         if show_plot:
