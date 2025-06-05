@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     if args.data == "final":
         if args.reddim == "PCA":
-            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
@@ -84,7 +84,7 @@ if __name__ == '__main__':
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
         elif args.reddim == "TSNE":
-            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
@@ -95,8 +95,8 @@ if __name__ == '__main__':
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
-            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="PCA")
-            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
@@ -107,4 +107,5 @@ if __name__ == '__main__':
                 print("\nClusters with DBSCAN\n")
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
-
+        
+        stat_desc(points, labels, args.k)

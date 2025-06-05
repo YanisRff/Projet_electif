@@ -21,15 +21,15 @@ def mean(arr):
     return sum/len(arr)
 
 def mediane(arr):
-    """Calcule la médiane en prenant en entrée un talbeau d'entier"""
+    arr = sorted(arr)
     n = len(arr)
-    if n%2==0:
-        """Si la taille du tableau est paire, on fait la moyenne des deux valeurs au centre"""
-        mediane = (arr[n//(2-1)] + arr[(n//2) + 1])/2
-    else:
+    if n == 0:
+        return None  # ou lever une erreur, selon ce que tu veux
+    if n % 2 == 1:  # taille impair
+        return arr[n // 2]
+    else:  # taille pair
+        return (arr[n//2 - 1] + arr[n//2]) / 2
 
-        mediane = arr[(n+1)//2]
-    return mediane
 def variance(arr):
     # Calcule la variance en prenant un tableau de int en entrée ainsi que la moyenne de ce même tableau
     moy = mean(arr)
@@ -337,7 +337,7 @@ def cluster_hierarchique(points, method='single', k=1):
         clusters = None
     return Z, clusters, seuil
 
-def kmeans_clustering(points, k=3, show_plot=True, red_dim="PCA"):
+def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
     points = np.array(points)
     kmeans = KMeans(n_clusters=k, random_state=42)
     kmeans.fit(points)
@@ -515,29 +515,58 @@ def evaluate_clusters(X, labels, verbose=True):
         "dunn_index": dunn,
         "clusters": cluster_stats
     }
+def stat_desc(points, labels, k):
+    import numpy as np
 
-def stat_desc(points, k,):
+    def transpose(matrix):
+        return list(map(list, zip(*matrix)))
+
     print("Pour le CAH : ")
     cluster1, matrice, indices = clustering(points, False, k, True)
-    tab{}
+    tab = {}
     for i in indices:
         if indices[i] not in tab:
             tab[indices[i]] = []
         tab[indices[i]].append(points[i])
     for i in range(len(tab)):
-        prin("Cluster ", i, " :")
-        print("Moyenne : ", mean(tab[i]))
-        print("Mediane : ", mediane(tab[i]))
-        print("Écart-type : ", ecart_type(variance(tab[i])))
-        print("\n")
-    print("\n")
+        print(f"Cluster {i} :")
+        dimensions = transpose(tab[i])
+        for j, dim in enumerate(dimensions):
+            print(f"Dimension {j} :")
+            print("Moyenne : ", mean(dim))
+            print("Médiane : ", mediane(dim))
+            print("Écart-type : ", ecart_type(variance(dim)))
+            print()
+        print()
+
     print("Pour le K-Means : ")
-    kmeans = kmeans_clustering(points, k, False)
-    tabK{}
-    
+    results_kmeans = kmeans_clustering(points, labels, k, show_plot=False)
+    cluster_labels = [label for (_, label) in results_kmeans]
+    for i in range(k):
+        k_points = [pt for idx, pt in enumerate(points) if cluster_labels[idx] == i]
+        print(f"Cluster {i} :")
+        dimensions = transpose(k_points)
+        for j, dim in enumerate(dimensions):
+            print(f"Dimension {j} :")
+            print("Moyenne : ", mean(dim))
+            print("Médiane : ", mediane(dim))
+            print("Écart-type : ", ecart_type(variance(dim)))
+            print()
+        print()
 
+    print("Pour le DBSCAN : ")
+    results_dbscan = dbscan_clustering(points, labels, show_plot=False)
+    db_labels = [label for (_, label) in results_dbscan]
+    clusters = sorted(set(db_labels))
+    for i in clusters:
+        d_points = [pt for idx, pt in enumerate(points) if db_labels[idx] == i]
+        print(f"Cluster {i} :")
+        dimensions = transpose(d_points)
+        for j, dim in enumerate(dimensions):
+            print(f"Dimension {j} :")
+            print("Moyenne : ", mean(dim))
+            print("Médiane : ", mediane(dim))
+            print("Écart-type : ", ecart_type(variance(dim)))
+            print()
+        print()
 
-
-
-
-}
