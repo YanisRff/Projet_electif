@@ -152,12 +152,9 @@ def dist_euclidienne(p1, p2):
     """
     Distance euclidienne entre deux points
     """
-
-    dist = sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
-    return dist
     dist = 0
-    for i in range (len(point1)):
-        dist += (point2[i] - point1[i]) ** 2
+    for i in range (len(p1)):
+        dist += (p2[i] - p1[i]) ** 2
     return sqrt(dist)
 
 
@@ -165,8 +162,6 @@ def dist_manhattan(p1, p2):
     """
     Distance de Manhattan (L1) entre deux points
     """
-    dist = abs(p2[0] - p1[0]) + abs(p2[1] - p1[1])
-
     dist = 0
     for i in range (len(point1)):
         dist += abs(point2[i] - point1[i])
@@ -236,7 +231,6 @@ def repaire(full_points,n_clusters=1, red_dim="PCA"):
             points.remove(p1)
         if(p2):
             points.remove(p2)
-    print(full_points)
     plt.show()
 
 
@@ -253,22 +247,23 @@ def seuil_max_gap(Z,k=1):
     return seuil
 
 def remplissage_matrice(ensemble_points):
-    matrice=[]
-    ligne=[]
+    matrice = []
     for i in range(len(ensemble_points)):
+        ligne = []
         for j in range(len(ensemble_points)):
-            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
+            ligne.append(round(dist_euclidienne(ensemble_points[i], ensemble_points[j])**2, 2))
         matrice.append(ligne)
-        ligne=[]
     return matrice
 
-def clustering(points):
+
+def clustering(points, show_plot = True,k=1, clean = True):
     pt = points[:]
     clusters=[]
     matrice = remplissage_matrice(pt)
     count=1
+    dim = len(points[0])
 
-    while len(matrice)>1:
+    while len(matrice)>k:
 
         min_dist = inf
         indice_x = 0
@@ -282,20 +277,23 @@ def clustering(points):
 
 
         clusters.append({pt[indice_x], pt[indice_y],min_dist})
-
-        centre = ((pt[indice_x][0] + pt[indice_y][0])/2,(pt[indice_x][1]+ pt[indice_y][1])/2)
+        
+        centre = ()
+        for i in range(len(points[0])):
+            centre += (((pt[indice_x][i] + pt[indice_y][i])/2),)
 
         pt[indice_x] = centre
         pt.remove(pt[indice_y])
 
         matrice = remplissage_matrice(pt)
-
-        print("Matrice des distances à l'étape : ",count)
-        for row in matrice:
-            print(row)
+        if clean == False:
+            print("Matrice des distances à l'étape : ",count)
+            for row in matrice:
+                print(row)
 
         count +=1
-        heatmap(matrice)
+        if show_plot:
+            heatmap(matrice)
 
     return matrice,clusters
 
