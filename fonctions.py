@@ -31,12 +31,16 @@ def mediane(arr):
         return (arr[n//2 - 1] + arr[n//2]) / 2
 
 def variance(arr):
-    # Calcule la variance en prenant un tableau de int en entrée ainsi que la moyenne de ce même tableau
+    # Calculate the variance of an array of integers
+    if len(arr) <= 1:
+        return 0  # Return 0 or handle this case as appropriate for your application
+
     moy = mean(arr)
     var = 0
     for i in range(len(arr)):
-        var+= (arr[i]-moy)**2
-    return var/(len(arr)-1)
+        var += (arr[i] - moy) ** 2
+    return var / (len(arr) - 1)
+
 
 def ecart_type(variance):
     # Calcule la ecart-type en prenant une variance en entrée
@@ -542,29 +546,36 @@ def evaluate_clusters(X, labels, verbose=True):
         "cohesion": coh,
         "clusters": cluster_stats
     }
+
 def stat_desc(points, labels, k):
 
     def transpose(matrix):
         return list(map(list, zip(*matrix)))
 
-    print("\n")
     print("Pour le CAH : ")
     cluster1, matrice, indices = clustering(points, False, k, True)
-    tab = {}
-    for i in indices:
-        if indices[i] not in tab:
-            tab[indices[i]] = []
-        tab[indices[i]].append(points[i])
-    for i in range(len(tab)):
+    print("Indices des clusters:", indices)  # Ajout pour le débogage
+
+    # Initialiser le dictionnaire avec toutes les clés possibles
+    tab = {i: [] for i in range(k)}
+
+    for i, cluster_index in enumerate(indices):
+        if cluster_index < k:  # Assurez-vous que l'indice est dans la plage attendue
+            tab[cluster_index].append(points[i])
+
+    for i in range(k):
         print(f"Cluster {i} :")
-        dimensions = transpose(tab[i])
-        for j, dim in enumerate(dimensions):
-            print(f"Dimension {j} :")
-            print("Moyenne : ", mean(dim))
-            print("Médiane : ", mediane(dim))
-            print("Écart-type : ", ecart_type(variance(dim)))
-            print("\n")
-        print("\n")
+        if tab[i]:  # Vérifiez si le cluster n'est pas vide
+            dimensions = transpose(tab[i])
+            for j, dim in enumerate(dimensions):
+                print(f"Dimension {j} :")
+                print("Moyenne : ", mean(dim))
+                print("Médiane : ", mediane(dim))
+                print("Écart-type : ", ecart_type(variance(dim)))
+                print()
+        else:
+            print(f"Aucun point de données pour le cluster {i}")
+        print()
 
     print("Pour le K-Means : ")
     results_kmeans = kmeans_clustering(points, labels, k, show_plot=False)
@@ -572,14 +583,17 @@ def stat_desc(points, labels, k):
     for i in range(k):
         k_points = [pt for idx, pt in enumerate(points) if cluster_labels[idx] == i]
         print(f"Cluster {i} :")
-        dimensions = transpose(k_points)
-        for j, dim in enumerate(dimensions):
-            print(f"Dimension {j} :")
-            print("Moyenne : ", mean(dim))
-            print("Médiane : ", mediane(dim))
-            print("Écart-type : ", ecart_type(variance(dim)))
-            print("\n")
-        print("\n")
+        if k_points:  # Vérifiez si le cluster n'est pas vide
+            dimensions = transpose(k_points)
+            for j, dim in enumerate(dimensions):
+                print(f"Dimension {j} :")
+                print("Moyenne : ", mean(dim))
+                print("Médiane : ", mediane(dim))
+                print("Écart-type : ", ecart_type(variance(dim)))
+                print()
+        else:
+            print(f"Aucun point de données pour le cluster {i}")
+        print()
 
     print("Pour le DBSCAN : ")
     results_dbscan = dbscan_clustering(points, labels, show_plot=False)
@@ -588,12 +602,15 @@ def stat_desc(points, labels, k):
     for i in clusters:
         d_points = [pt for idx, pt in enumerate(points) if db_labels[idx] == i]
         print(f"Cluster {i} :")
-        dimensions = transpose(d_points)
-        for j, dim in enumerate(dimensions):
-            print(f"Dimension {j} :")
-            print("Moyenne : ", mean(dim))
-            print("Médiane : ", mediane(dim))
-            print("Écart-type : ", ecart_type(variance(dim)))
-            print("\n")
-        print("\n")
+        if d_points:  # Vérifiez si le cluster n'est pas vide
+            dimensions = transpose(d_points)
+            for j, dim in enumerate(dimensions):
+                print(f"Dimension {j} :")
+                print("Moyenne : ", mean(dim))
+                print("Médiane : ", mediane(dim))
+                print("Écart-type : ", ecart_type(variance(dim)))
+                print()
+        else:
+            print(f"Aucun point de données pour le cluster {i}")
+        print()
 
