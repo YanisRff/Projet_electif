@@ -264,6 +264,9 @@ def clustering(points, show_plot = True,k=1, clean = True):
     matrice = remplissage_matrice(pt)
     count=1
     dim = len(points[0])
+    n = len(points)
+    cluster_ids = list(range(n))  # Chaque point initial a son propre identifiant
+    pt_indices = list(range(n))
 
     while len(matrice)>k:
 
@@ -279,13 +282,23 @@ def clustering(points, show_plot = True,k=1, clean = True):
 
 
         clusters.append({pt[indice_x], pt[indice_y],min_dist})
-        
+
+        id_x = cluster_ids[pt_indices[indice_x]]
+        id_y = cluster_ids[pt_indices[indice_y]]
+        new_id = min(id_x, id_y)
+        old_id = max(id_x, id_y)
+        for i in range(n):
+            if cluster_ids[i] == old_id:
+                cluster_ids[i] = new_id
+
         centre = ()
         for i in range(len(points[0])):
             centre += (((pt[indice_x][i] + pt[indice_y][i])/2),)
 
         pt[indice_x] = centre
         pt.remove(pt[indice_y])
+
+        pt_indices.pop(indice_y)
 
         matrice = remplissage_matrice(pt)
         if clean == False:
@@ -297,7 +310,7 @@ def clustering(points, show_plot = True,k=1, clean = True):
         if show_plot:
             heatmap(matrice)
 
-    return matrice,clusters
+    return matrice,clusters, cluster_ids
 
 
 
@@ -324,7 +337,7 @@ def cluster_hierarchique(points, method='single', k=1):
         clusters = None
     return Z, clusters, seuil
 
-def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
+def kmeans_clustering(points, k=3, show_plot=True, red_dim="PCA"):
     points = np.array(points)
     kmeans = KMeans(n_clusters=k, random_state=42)
     kmeans.fit(points)
@@ -333,13 +346,12 @@ def kmeans_clustering(points, labels, k=3, show_plot=True, red_dim="PCA"):
     results = list(zip(labels, cluster_labels))
 
     if show_plot:
-        # Réduction de dimension selon l'argument red_dim
         if red_dim.upper() == "TSNE":
             perplexity = min(30, max(5, len(points) // 3))
             reducer = TSNE(n_components=2, random_state=42, perplexity=perplexity)
             points_2D = reducer.fit_transform(points)
-            centers_2D = None  # t-SNE ne permet pas de transformer de nouveaux points comme les centres
-        else:  # par défaut ou si "PCA"
+            centers_2D = None
+        else:
             reducer = PCA(n_components=2)
             points_2D = reducer.fit_transform(points)
             centers_2D = reducer.transform(kmeans.cluster_centers_)
@@ -503,3 +515,29 @@ def evaluate_clusters(X, labels, verbose=True):
         "dunn_index": dunn,
         "clusters": cluster_stats
     }
+
+def stat_desc(points, k,):
+    print("Pour le CAH : ")
+    cluster1, matrice, indices = clustering(points, False, k, True)
+    tab{}
+    for i in indices:
+        if indices[i] not in tab:
+            tab[indices[i]] = []
+        tab[indices[i]].append(points[i])
+    for i in range(len(tab)):
+        prin("Cluster ", i, " :")
+        print("Moyenne : ", mean(tab[i]))
+        print("Mediane : ", mediane(tab[i]))
+        print("Écart-type : ", ecart_type(variance(tab[i])))
+        print("\n")
+    print("\n")
+    print("Pour le K-Means : ")
+    kmeans = kmeans_clustering(points, k, False)
+    tabK{}
+    
+
+
+
+
+
+}

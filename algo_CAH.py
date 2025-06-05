@@ -44,7 +44,9 @@ if __name__ == '__main__':
         print("Seuil utilisé:", seuil)
         print("Clusters:", clusters_cah)
         print(Z, clusters_cah, seuil)
-    cluster1, matrice = clustering(points, args.hm, args.k,args.clean)
+    cluster1, matrice, indices = clustering(points, args.hm, args.k,args.clean)
+    for i in range(len(indices)):
+        print("point ", i, "correspond au cluster ", indices[i])
     if args.clean == False:
         print(cluster1)
         print(matrice)
@@ -71,7 +73,7 @@ if __name__ == '__main__':
 
     if args.data == "final":
         if args.reddim == "PCA":
-            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="PCA")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
@@ -82,7 +84,7 @@ if __name__ == '__main__':
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
         elif args.reddim == "TSNE":
-            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="TSNE")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
@@ -93,8 +95,8 @@ if __name__ == '__main__':
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
-            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
-            results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
+            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="PCA")
+            results_kmeans = kmeans_clustering(points, k=args.k, red_dim="TSNE")
             if args.clean == False:
                 print("\nClusters with kmeans_clustering\n")
                 for label, cluster in results_kmeans:
