@@ -453,4 +453,3 @@ def silhouette_score_custom(points, labels):
         s[i] = (b_i - a_i) / max(a_i, b_i) if max(a_i, b_i) > 0 else 0
 
     return np.mean(s)
-
