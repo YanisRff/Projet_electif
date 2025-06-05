@@ -39,11 +39,14 @@ if __name__ == '__main__':
 
     Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
     if args.clean == False:
-        print("\nRésultats CAH:")
-        print("Z : ",Z)
-        print("Seuil utilisé:", seuil)
-        print("Clusters:", clusters_cah)
-        print(Z, clusters_cah, seuil)
+        print("\n📊 Résultats de la CAH (méthode: Ward)")
+        print(f"- Seuil utilisé : {seuil:.2f}")
+        print(f"- Nombre de clusters détectés : {len(set(clusters_cah))}\n")
+        print("| Point | Cluster |")
+        print("|-------|---------|")
+        for i, c in enumerate(clusters_cah):
+            print(f"|  {i:<5} |   {c:<7} |")
+
     cluster1, matrice, indices = clustering(points, args.hm, args.k,args.clean)
     for i in range(len(indices)):
         print("point ", i, "correspond au cluster ", indices[i])
@@ -58,6 +61,10 @@ if __name__ == '__main__':
 
     if len(set(kmeans_labels)) > 1:
         evaluate_clusters(points, kmeans_labels)
+        print("\n🔢 Affectation des individus (K-Means)\n")
+        for i, cluster in enumerate(kmeans_labels):
+            print(f"Individu {i+1:02d} → Cluster {cluster}")
+
     else:
         print("Évaluation impossible : un seul cluster détecté par KMeans.")
 
@@ -83,6 +90,11 @@ if __name__ == '__main__':
                 print("\nClusters with DBSCAN\n")
                 for label, cluster in results_dbscan:
                     print(f"{label} → Cluster {cluster}")
+                print("\n⚠️  DBSCAN")
+                for label, cluster in results_dbscan:
+                    cluster_str = "Bruit" if cluster == -1 else f"Cluster {cluster}"
+                    print(f"{label} → {cluster_str}")
+
         elif args.reddim == "TSNE":
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
             if args.clean == False:
