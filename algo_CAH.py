@@ -41,7 +41,10 @@ if __name__ == '__main__':
     print("Seuil utilisé:", seuil)
     print("Clusters:", clusters_cah)
     print(Z, clusters_cah, seuil)
-    #print(clustering(points))
+    print(points)
+    cluster1, matrice = clustering(points)
+    print(cluster1)
+    print(matrice)
 
     heatmap(remplissage_matrice(points))
     """
@@ -52,7 +55,9 @@ if __name__ == '__main__':
         print("Silhouette Score non calculable (un seul cluster)")
     """
     if args.reddim == "PCA":
+        print("points avant repaire",points)
         repaire(points, args.k, "PCA")
+        print("points après repaire",points)
     elif args.reddim == "TSNE":
         repaire(points, args.k, "TSNE")
     elif args.reddim == "compare":
@@ -91,3 +96,4 @@ if __name__ == '__main__':
             print("\nClusters with DBSCAN\n")
             for label, cluster in results_dbscan:
                 print(f"{label} → Cluster {cluster}")
+

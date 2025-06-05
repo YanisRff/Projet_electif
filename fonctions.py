@@ -201,6 +201,7 @@ def dist_min(points,distance_func):
 
 
 def repaire(full_points,n_clusters=1, red_dim="PCA"):
+
     """
     Utilise les différentes méthodes de clustering afin de réaliser un repaire étape par étape de l'avancé des différents
     algorithmes
@@ -256,14 +257,15 @@ def remplissage_matrice(ensemble_points):
     ligne=[]
     for i in range(len(ensemble_points)):
         for j in range(len(ensemble_points)):
-            ligne.append(round(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2,2))
+            ligne.append(dist_euclidienne(ensemble_points[i],ensemble_points[j])**2)
         matrice.append(ligne)
         ligne=[]
     return matrice
 
 def clustering(points):
+    pt = points[:]
     clusters=[]
-    matrice = remplissage_matrice(points)
+    matrice = remplissage_matrice(pt)
     count=1
 
     while len(matrice)>1:
@@ -278,14 +280,15 @@ def clustering(points):
                     indice_x = i
                     indice_y = j
 
-        clusters.append({points[indice_x], points[indice_y]})
 
-        centre = ((points[indice_x][0] + points[indice_y][0])/2,(points[indice_x][1]+ points[indice_y][1])/2)
+        clusters.append({pt[indice_x], pt[indice_y],min_dist})
 
-        points[indice_x] = centre
-        points.remove(points[indice_y])
+        centre = ((pt[indice_x][0] + pt[indice_y][0])/2,(pt[indice_x][1]+ pt[indice_y][1])/2)
 
-        matrice = remplissage_matrice(points)
+        pt[indice_x] = centre
+        pt.remove(pt[indice_y])
+
+        matrice = remplissage_matrice(pt)
 
         print("Matrice des distances à l'étape : ",count)
         for row in matrice:
@@ -293,10 +296,6 @@ def clustering(points):
 
         count +=1
         heatmap(matrice)
-
-
-
-
 
     return matrice,clusters
 
