@@ -11,6 +11,7 @@ import seaborn as sns
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_samples, silhouette_score
+from scipy.spatial.distance import cdist, pdist
 
 def mean(arr):
     #Calcule la moyenne en prenant un tableau de int en entrée
@@ -456,20 +457,54 @@ def silhouette_score_custom(points, labels):
     return np.mean(s)
 
 #Zone evalution
+def dunn_index(X, labels):
+    """
+    Calcule l'indice de Dunn.
+    """
+    unique_clusters = np.unique(labels)
+    if len(unique_clusters) < 2:
+        return None
+
+    X = np.array(X)
+    centroids = [np.mean(X[labels == k], axis=0) for k in unique_clusters]
+
+    # Distances inter-clusters (entre centroïdes)
+    inter_dists = []
+    for i in range(len(centroids)):
+        for j in range(i + 1, len(centroids)):
+            inter_dists.append(np.linalg.norm(centroids[i] - centroids[j]))
+
+    # Distances intra-clusters
+    intra_dists = []
+    for k in unique_clusters:
+        cluster_points = X[labels == k]
+        if len(cluster_points) >= 2:
+            intra_dists.append(np.max(pdist(cluster_points)))
+        else:
+            intra_dists.append(0)  # aucun écart si 1 seul point
+
+    max_intra = max(intra_dists)
+    if max_intra == 0:
+        return None  # éviter division par 0
+
+    return min(inter_dists) / max_intra
+
 
 def evaluate_clusters(X, labels, verbose=True):
     """
-    Évalue un clustering via les scores de silhouette.
-    Retourne :
-    - Score moyen global
-    - Moyenne par cluster
-    - Taille de chaque cluster
+    Évalue un clustering via :
+    - la silhouette globale
+    - la silhouette moyenne par cluster
+    - l’indice de Dunn
     """
     if len(set(labels)) < 2:
-            print("Impossible de calculer le score de silhouette : au moins deux clusters sont nécessaires.")
-            return
+        print("Impossible de calculer les indices : au moins deux clusters sont nécessaires.")
+        return
+
+    X = np.array(X)
     silhouette_vals = silhouette_samples(X, labels)
     silhouette_avg = silhouette_score(X, labels)
+    dunn = dunn_index(X, np.array(labels))
 
     cluster_ids = np.unique(labels)
     cluster_stats = []
@@ -489,8 +524,13 @@ def evaluate_clusters(X, labels, verbose=True):
         print("Silhouette moyenne par cluster :")
         for stat in cluster_stats:
             print(f" - Cluster {stat['cluster']}: {stat['mean_silhouette']:.4f} (taille: {stat['size']})")
+        if dunn is not None:
+            print(f"Indice de Dunn : {dunn:.4f}")
+        else:
+            print("Indice de Dunn non calculable.")
 
     return {
         "silhouette_global": silhouette_avg,
+        "dunn_index": dunn,
         "clusters": cluster_stats
     }
