@@ -7,6 +7,8 @@ if __name__ == '__main__':
     parser.add_argument("--data", choices=["test", "final"], nargs="?", default="test", help="Data à utiliser pour l'exécution du programme")
     parser.add_argument("--k", type=int, nargs="?", default=1, help="Identifiant de la data à utiliser (ex : 1, 2...)")
     parser.add_argument("--reddim", choices=["PCA", "TSNE", "compare"],nargs="?", default="PCA", help="Fonction de réduction de dimension à utiliser")
+    parser.add_argument("--hm", action='store_true', help="Afficher les heatmaps à chaque étape")
+    parser.add_argument("--clean", action='store_true', help="Nettoyer les fichiers ou dossiers temporaires")
     args = parser.parse_args()
 
     if args.data == "test":
@@ -36,15 +38,16 @@ if __name__ == '__main__':
 
 
     Z, clusters_cah, seuil = cluster_hierarchique(points, method='ward',k=args.k)
-    print("\nRésultats CAH:")
-    print("Z : ",Z)
-    print("Seuil utilisé:", seuil)
-    print("Clusters:", clusters_cah)
-    print(Z, clusters_cah, seuil)
-    print(points)
-    cluster1, matrice = clustering(points)
-    print(cluster1)
-    print(matrice)
+    if args.clean == False:
+        print("\nRésultats CAH:")
+        print("Z : ",Z)
+        print("Seuil utilisé:", seuil)
+        print("Clusters:", clusters_cah)
+        print(Z, clusters_cah, seuil)
+    cluster1, matrice = clustering(points, args.hm, args.k,args.clean)
+    if args.clean == False:
+        print(cluster1)
+        print(matrice)
 
     heatmap(remplissage_matrice(points))
     k = max(2, args.k)
@@ -57,9 +60,7 @@ if __name__ == '__main__':
         print("Évaluation impossible : un seul cluster détecté par KMeans.")
 
     if args.reddim == "PCA":
-        print("points avant repaire",points)
         repaire(points, args.k, "PCA")
-        print("points après repaire",points)
     elif args.reddim == "TSNE":
         repaire(points, args.k, "TSNE")
     elif args.reddim == "compare":
@@ -71,31 +72,37 @@ if __name__ == '__main__':
     if args.data == "final":
         if args.reddim == "PCA":
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
-            print("\nClusters with kmeans_clustering\n")
-            for label, cluster in results_kmeans:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with kmeans_clustering\n")
+                for label, cluster in results_kmeans:
+                    print(f"{label} → Cluster {cluster}")
             results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
-            print("\nClusters with DBSCAN\n")
-            for label, cluster in results_dbscan:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with DBSCAN\n")
+                for label, cluster in results_dbscan:
+                    print(f"{label} → Cluster {cluster}")
         elif args.reddim == "TSNE":
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
-            print("\nClusters with kmeans_clustering\n")
-            for label, cluster in results_kmeans:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with kmeans_clustering\n")
+                for label, cluster in results_kmeans:
+                    print(f"{label} → Cluster {cluster}")
             results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
-            print("\nClusters with DBSCAN\n")
-            for label, cluster in results_dbscan:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with DBSCAN\n")
+                for label, cluster in results_dbscan:
+                    print(f"{label} → Cluster {cluster}")
         elif args.reddim == "compare":
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="TSNE")
-            print("\nClusters with kmeans_clustering\n")
-            for label, cluster in results_kmeans:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with kmeans_clustering\n")
+                for label, cluster in results_kmeans:
+                    print(f"{label} → Cluster {cluster}")
             results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
             results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="TSNE")
-            print("\nClusters with DBSCAN\n")
-            for label, cluster in results_dbscan:
-                print(f"{label} → Cluster {cluster}")
+            if args.clean == False:
+                print("\nClusters with DBSCAN\n")
+                for label, cluster in results_dbscan:
+                    print(f"{label} → Cluster {cluster}")
 
