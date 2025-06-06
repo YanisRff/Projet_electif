@@ -451,7 +451,7 @@ def dbscan_clustering(points, labels, eps=1.5, min_samples=3, show_plot=True, re
     return results
 
 
-#Zone evalution
+#Zone evaluation
 def dunn_index(X, labels):
     """
     Calcule l'indice de Dunn.
@@ -463,34 +463,48 @@ def dunn_index(X, labels):
     X = np.array(X)
     centroids = [np.mean(X[labels == k], axis=0) for k in unique_clusters]
 
-    # Distances inter-clusters (entre centroïdes)
+    #distances inter-clusters (entre centroïdes)
     inter_dists = []
     for i in range(len(centroids)):
         for j in range(i + 1, len(centroids)):
             inter_dists.append(np.linalg.norm(centroids[i] - centroids[j]))
 
-    # Distances intra-clusters
+    #distances intra-clusters
     intra_dists = []
     for k in unique_clusters:
         cluster_points = X[labels == k]
         if len(cluster_points) >= 2:
             intra_dists.append(np.max(pdist(cluster_points)))
         else:
-            intra_dists.append(0)  # aucun écart si 1 seul point
+            intra_dists.append(0)  #aucun écart si 1 seul point
 
     max_intra = max(intra_dists)
     if max_intra == 0:
-        return None  # éviter division par 0
+        return None
 
     return min(inter_dists) / max_intra
-
+def cohesion(points, labels):
+    """
+    Calcule la moyenne des distances intra-cluster.
+    """
+    clusters = set(labels)
+    total = 0
+    count = 0
+    for c in clusters:
+        pts = [p for p, lab in zip(points, labels) if lab == c]
+        if len(pts) > 1:
+            dist = cdist(pts, pts, metric='euclidean')
+            total += np.sum(dist) / (len(pts) * (len(pts) - 1))
+            count += 1
+    return total / count if count > 0 else 0
 
 def evaluate_clusters(X, labels, verbose=True):
     """
     Évalue un clustering via :
-    - la silhouette globale
-    - la silhouette moyenne par cluster
-    - l’indice de Dunn
+    - silhouette globale
+    - silhouette moyenne par cluster
+    - indice de Dunn
+    - cohésion intra-cluster
     """
     if len(set(labels)) < 2:
         print("Impossible de calculer les indices : au moins deux clusters sont nécessaires.")
@@ -499,7 +513,8 @@ def evaluate_clusters(X, labels, verbose=True):
     X = np.array(X)
     silhouette_vals = silhouette_samples(X, labels)
     silhouette_avg = silhouette_score(X, labels)
-    dunn = dunn_index(X, np.array(labels))
+    dunn = dunn_index(X, labels)
+    coh = cohesion(X, labels)
 
     cluster_ids = np.unique(labels)
     cluster_stats = []
@@ -522,16 +537,17 @@ def evaluate_clusters(X, labels, verbose=True):
         if dunn is not None:
             print(f"Indice de Dunn : {dunn:.4f}")
         else:
-            print("Indice de Dunn non calculable.")
+            print("Indice de Dunn non calculable (clusters trop petits).")
+        print(f"Cohésion moyenne intra-cluster : {coh:.4f}")
 
     return {
         "silhouette_global": silhouette_avg,
         "dunn_index": dunn,
+        "cohesion": coh,
         "clusters": cluster_stats
     }
 
 def stat_desc(points, labels, k):
-    import numpy as np
 
     def transpose(matrix):
         return list(map(list, zip(*matrix)))
