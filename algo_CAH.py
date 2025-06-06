@@ -72,9 +72,6 @@ if __name__ == '__main__':
         evaluate_clusters(points, kmeans_labels)
     else:
         print("Évaluation impossible : un seul cluster détecté par KMeans.")
-        print("\nAffectation des individus (K-Means)\n")
-        for i, cluster in enumerate(kmeans_labels):
-            print(f"Individu {i+1:02d} → Cluster {cluster}")
 
 
     if args.reddim == "PCA":
@@ -91,14 +88,11 @@ if __name__ == '__main__':
         if args.reddim == "PCA":
             results_kmeans = kmeans_clustering(points, labels, k=args.k, red_dim="PCA")
             if args.clean == False:
-                print("\nClusters with kmeans_clustering\n")
+                print("\n🔢 Affectation des individus (K-Means)\n")
                 for label, cluster in results_kmeans:
                     print(f"{label} → Cluster {cluster}")
             results_dbscan = dbscan_clustering(points=points, labels=labels, eps=1.5, min_samples=3, show_plot=True, red_dim="PCA")
             if args.clean == False:
-                print("\nClusters with DBSCAN\n")
-                for label, cluster in results_dbscan:
-                    print(f"{label} → Cluster {cluster}")
                 print("\n⚠️  DBSCAN")
                 for label, cluster in results_dbscan:
                     cluster_str = "Bruit" if cluster == -1 else f"Cluster {cluster}"
