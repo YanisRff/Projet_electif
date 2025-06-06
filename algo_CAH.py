@@ -53,20 +53,29 @@ if __name__ == '__main__':
     if args.clean == False:
         print(cluster1)
         print(matrice)
+    print("-------------------------------------")
+    print("\nRésultats d'evalution d'indice de CAH")
+    print("-------------------------------------")
 
+    if len(set(clusters_cah)) > 1:
+        evaluate_clusters(points, clusters_cah)
+    else:
+        print("Évaluation impossible : un seul cluster détecté par CAH.")
     heatmap(remplissage_matrice(points))
     k = max(2, args.k)
     results_kmeans = kmeans_clustering(points, labels, k=k, show_plot=False, red_dim="PCA")
     kmeans_labels = [cluster for _, cluster in results_kmeans]
-
+    print("-------------------------------------")
+    print("\nRésultats d'evalution d'indice de K-Means")
+    print("-------------------------------------")
     if len(set(kmeans_labels)) > 1:
         evaluate_clusters(points, kmeans_labels)
-        print("\n🔢 Affectation des individus (K-Means)\n")
+    else:
+        print("Évaluation impossible : un seul cluster détecté par KMeans.")
+        print("\nAffectation des individus (K-Means)\n")
         for i, cluster in enumerate(kmeans_labels):
             print(f"Individu {i+1:02d} → Cluster {cluster}")
 
-    else:
-        print("Évaluation impossible : un seul cluster détecté par KMeans.")
 
     if args.reddim == "PCA":
         repaire(points, args.k, "PCA")
