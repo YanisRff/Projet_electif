@@ -1,4 +1,4 @@
-# Projet Électif A3
+# PE_Nantes_Groupe6
 
 Ce projet se compose de deux scripts principaux :
 
